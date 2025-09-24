@@ -42,19 +42,17 @@ class Tutor(db.Model, SerializerMixin):
 
 
 class StudySession(db.Model, SerializerMixin):
-  __tablename__ = "study_sessions"
+    __tablename__ = "study_sessions"
 
-  id = db.Column(db.Integer, primary_key=True)
-  notes = db.column(db.String)
-  duration_minutes = db.Column(db.Integer)
+    id = db.Column(db.Integer, primary_key=True)
+    notes = db.Column(db.Text, nullable=True)
+    duration_minutes = db.Column(db.Integer)
 
-  student_id = db.Column(db.Integer, db.ForeignKey("students.id"))
-  subject_id = db.Column(db.Integer, db.ForeignKey("subject.id"))
+    student_id = db.Column(db.Integer, db.ForeignKey("students.id"))
+    subject_id = db.Column(db.Integer, db.ForeignKey("subjects.id"))
 
-# the relationships
+    # relationships
+    student = db.relationship("Student", back_populates="study_sessions")
+    subject = db.relationship("Subject", back_populates="study_sessions")
 
-student = db.relationship("Student", back_populates="study_sessions")
-subject = db.relationship("Subject", back_populates="study_sessions")
-
-serialize_rules = ("-student.study_sessions", "-subject.study_sessions")
-
+    serialize_rules = ("-student.study_sessions", "-subject.study_sessions")
