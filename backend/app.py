@@ -5,10 +5,10 @@ from models import db
 
 
 from routes.session_routes import session_bp
-from routes.student_routes import student_bp
+from routes.students_routes import student_bp
 from routes.subject_routes import subject_bp
 from routes.tutor_routes import tutor_bp
-from routes_subject_routes import tutor_subject_bp
+from routes.tutor_subject_routes import tutor_subject_bp
 
 
 def create_app():
