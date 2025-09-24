@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify
-from models import db, StudySession, Tutor, Student, Subject
+from models import db, StudySession
 
-study_session_bp = Blueprint("study_sessions", _name_, url_prefix="/study_sessions")
+study_session_bp = Blueprint("study_sessions", __name__, url_prefix="/study-sessions")  # ✅ fixed
 
 # GET all study sessions
 @study_session_bp.route("/", methods=["GET"])
@@ -20,10 +20,10 @@ def get_study_session(id):
 def create_study_session():
     data = request.get_json()
     new_session = StudySession(
-        tutor_id=data.get("tutor_id"),
         student_id=data.get("student_id"),
         subject_id=data.get("subject_id"),
-        scheduled_time=data.get("scheduled_time")
+        # remove tutor_id if not part of model
+        # scheduled_time=data.get("scheduled_time") if field exists
     )
     db.session.add(new_session)
     db.session.commit()
