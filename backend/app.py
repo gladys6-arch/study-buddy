@@ -1,11 +1,7 @@
 from flask import Flask
 from flask_migrate import Migrate
 from models import db
-from routes.session.routes import session_bp
 
-from routes.user_routes import user_bp
-from routes.subject_routes import subject_bp
-from routes.session_routes import session_bp
 
 
 from routes.session_routes import session_bp
