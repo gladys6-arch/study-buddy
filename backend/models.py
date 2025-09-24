@@ -52,5 +52,3 @@ class StudySession(db.Model, SerializerMixin):
 
 
 
-#backend coding 
-#frontend coding using using react
