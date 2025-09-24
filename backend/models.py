@@ -49,3 +49,8 @@ class StudySession(db.Model, SerializerMixin):
     duration_minutes = db.Column(db.Integer)
 
     serialize_rules = ("-student.study_sessions", "-subject.study_sessions")
+
+
+
+#backend coding 
+#frontend coding using using react
