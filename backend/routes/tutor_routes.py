@@ -36,4 +36,4 @@ def delete_tutor(id):
     db.session.delete(tutor)
     db.session.commit()
    # return jsonify({"message": "Tutor deleted"})
-   return jsonify({"message": "TutorSubject deleted"}), 200
+     return jsonify({"message": "TutorSubject deleted"}), 200
