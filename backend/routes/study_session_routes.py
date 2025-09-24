@@ -1,48 +1,38 @@
-from flask import Blueprint, jsonify, request
-from models import db, StudySession
+from flask import Blueprint, request, jsonify
+from models import db, StudySession, Tutor, Student, Subject
 
-session_bp = Blueprint("session", __name__, url_prefix="/sessions")
+study_session_bp = Blueprint("study_sessions", _name_, url_prefix="/study_sessions")
 
-@session_bp.route("/", methods=["GET"])
-def get_sessions():
+# GET all study sessions
+@study_session_bp.route("/", methods=["GET"])
+def get_study_sessions():
     sessions = StudySession.query.all()
-    return jsonify([
-        {"id": s.id, "topic": s.topic, "date": s.date.isoformat(), "student_id": s.student_id, "tutor_id": s.tutor_id}
-        for s in sessions
-    ])
+    return jsonify([s.to_dict() for s in sessions]), 200
 
-@session_bp.route("/<int:id>", methods=["GET"])
-def get_session(id):
-    s = StudySession.query.get_or_404(id)
-    return jsonify({"id": s.id, "topic": s.topic, "date": s.date.isoformat(), "student_id": s.student_id, "tutor_id": s.tutor_id})
+# GET single study session by id
+@study_session_bp.route("/<int:id>", methods=["GET"])
+def get_study_session(id):
+    session = StudySession.query.get_or_404(id)
+    return jsonify(session.to_dict()), 200
 
-@session_bp.route("/", methods=["POST"])
-def create_session():
+# POST create new study session
+@study_session_bp.route("/", methods=["POST"])
+def create_study_session():
     data = request.get_json()
     new_session = StudySession(
-        topic=data["topic"],
-        date=data["date"],  # make sure this is ISO string
-        student_id=data["student_id"],
-        tutor_id=data["tutor_id"]
+        tutor_id=data.get("tutor_id"),
+        student_id=data.get("student_id"),
+        subject_id=data.get("subject_id"),
+        scheduled_time=data.get("scheduled_time")
     )
     db.session.add(new_session)
     db.session.commit()
-    return jsonify({"message": "Session created", "id": new_session.id}), 201
+    return jsonify(new_session.to_dict()), 201
 
-@session_bp.route("/<int:id>", methods=["PUT"])
-def update_session(id):
-    s = StudySession.query.get_or_404(id)
-    data = request.get_json()
-    s.topic = data.get("topic", s.topic)
-    s.date = data.get("date", s.date)
-    s.student_id = data.get("student_id", s.student_id)
-    s.tutor_id = data.get("tutor_id", s.tutor_id)
+# DELETE a study session
+@study_session_bp.route("/<int:id>", methods=["DELETE"])
+def delete_study_session(id):
+    session = StudySession.query.get_or_404(id)
+    db.session.delete(session)
     db.session.commit()
-    return jsonify({"message": "Session updated"})
-
-@session_bp.route("/<int:id>", methods=["DELETE"])
-def delete_session(id):
-    s = StudySession.query.get_or_404(id)
-    db.session.delete(s)
-    db.session.commit()
-    return jsonify({"message": "Session deleted"})
+    return jsonify({"message": "Study session deleted"}), 200
