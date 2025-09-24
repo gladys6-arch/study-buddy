@@ -3,6 +3,13 @@ from sqlalchemy_serializer import SerializerMixin
 
 db = SQLAlchemy()
 
+tutor_subjects = db.Table(
+    "tutor_subjects",
+    db.Column("tutor_id", db.Integer, db.ForeignKey("tutors.id"), primary_key=True),
+    db.Column("subject_id", db.Integer, db.ForeignKey("subjects.id"), primary_key=True)
+)
+
+
 class Student(db.Model, SerializerMixin):
   __tablename__ = "students"
 
@@ -11,6 +18,7 @@ class Student(db.Model, SerializerMixin):
 
   study_sessions=db.relationship("StudySession", back_populates="students")
 
+  serialize_rules = ("-study_sessions.student",)
 
 class Subject(db.Model, SerializerMixin):
   __tablename__ = "subjects"
@@ -19,6 +27,8 @@ class Subject(db.Model, SerializerMixin):
   name =db.Column(db.String, nullable=False)
 
   tutors=db.relationship("Tutor", back_populates="subjects")
+  serialize_rules = ("-study_sessions.subject", "-tutors.subjects")
+
 
 
 class Tutor(db.Model, SerializerMixin):
@@ -28,6 +38,8 @@ class Tutor(db.Model, SerializerMixin):
   name = db.Column(db.String, nullable=False)
 
   subjects = db.relationship("Subject", back_populates="tutors")
+  serialize_rules = ("-subjects.tutors",)
+
 
 class StudySession(db.Model, SerializerMixin):
   __tablename__ = "study_sessions"
@@ -43,4 +55,6 @@ class StudySession(db.Model, SerializerMixin):
 
 student = db.relationship("Student", back_populates="study_sessions")
 subject = db.relationship("Subject", back_populates="study_sessions")
+
+serialize_rules = ("-student.study_sessions", "-subject.study_sessions")
 
