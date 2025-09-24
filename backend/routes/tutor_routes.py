@@ -35,5 +35,4 @@ def delete_tutor(id):
     tutor = Tutor.query.get_or_404(id)
     db.session.delete(tutor)
     db.session.commit()
-   # return jsonify({"message": "Tutor deleted"})
-    return jsonify({"message": "TutorSubject deleted"}), 200
+    return jsonify({"message": "Tutor deleted"}), 200
