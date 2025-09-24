@@ -5,9 +5,10 @@ from models import db
 
 
 from routes.session_routes import session_bp
-from routes.user_routes import user_bp
+from routes.student_routes import student_bp
 from routes.subject_routes import subject_bp
-from routes.session_routes import session_bp
+from routes.tutor_routes import tutor_bp
+from routes_subject_routes import tutor_subject_bp
 
 
 def create_app():
@@ -27,9 +28,12 @@ def create_app():
         return {"message": "Study Buddy API is running"}
 
 
-    app.register_blueprint(user_bp)
+    app.register_blueprint(student_bp)
     app.register_blueprint(subject_bp)
+    app.register_blueprint(tutor_bp)
     app.register_blueprint(session_bp)
+    app.register_blueprint(tutor_subject_bp)
+
 
 
     return app
