@@ -1,7 +1,7 @@
 from flask import Blueprint, jsonify, request
 from models import db, Subject
 
-subject_bp = Blueprint("subject", __name__, url_prefix="/subjects")
+subject_bp = Blueprint("subjects", __name__, url_prefix="/subjects")
 
 # GET all subjects
 @subject_bp.route("/", methods=["GET"])
