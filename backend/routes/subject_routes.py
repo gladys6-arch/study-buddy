@@ -1,67 +1,43 @@
-# routes/subject_routes.py
+from flask import Blueprint, jsonify, request
+from models import db, Student
 
-from flask import Blueprint, request, jsonify
-from models import db, Subject
+student_bp = Blueprint("student", __name__, url_prefix="/students")
 
-subject_bp = Blueprint("subject_bp", __name__, url_prefix="/subjects")
+# GET all students
+@student_bp.route("/", methods=["GET"])
+def get_students():
+    students = Student.query.all()
+    return jsonify([{"id": s.id, "name": s.name, "email": s.email} for s in students])
 
-# GET all subjects
-@subject_bp.route("/", methods=["GET"])
-def get_subjects():
-    subjects = Subject.query.all()
-    return jsonify([s.to_dict() for s in subjects]), 200
+# GET single student by id
+@student_bp.route("/<int:id>", methods=["GET"])
+def get_student(id):
+    student = Student.query.get_or_404(id)
+    return jsonify({"id": student.id, "name": student.name, "email": student.email})
 
-
-# GET a single subject by ID
-@subject_bp.route("/<int:id>", methods=["GET"])
-def get_subject(id):
-    subject = Subject.query.get(id)
-    if not subject:
-        return jsonify({"error": "Subject not found"}), 404
-    return jsonify(subject.to_dict()), 200
-
-
-# POST - create a new subject
-@subject_bp.route("/", methods=["POST"])
-def create_subject():
+# POST create a new student
+@student_bp.route("/", methods=["POST"])
+def create_student():
     data = request.get_json()
-    if not data or "name" not in data:
-        return jsonify({"error": "Name is required"}), 400
-    
-    new_subject = Subject(
-        name=data["name"],
-        description=data.get("description", "")
-    )
-    db.session.add(new_subject)
+    new_student = Student(name=data["name"], email=data["email"])
+    db.session.add(new_student)
     db.session.commit()
-    
-    return jsonify(new_subject.to_dict()), 201
+    return jsonify({"message": "Student created", "id": new_student.id}), 201
 
-
-# PUT - update a subject
-@subject_bp.route("/<int:id>", methods=["PUT"])
-def update_subject(id):
-    subject = Subject.query.get(id)
-    if not subject:
-        return jsonify({"error": "Subject not found"}), 404
-    
+# PUT update student
+@student_bp.route("/<int:id>", methods=["PUT"])
+def update_student(id):
+    student = Student.query.get_or_404(id)
     data = request.get_json()
-    if "name" in data:
-        subject.name = data["name"]
-    if "description" in data:
-        subject.description = data["description"]
-
+    student.name = data.get("name", student.name)
+    student.email = data.get("email", student.email)
     db.session.commit()
-    return jsonify(subject.to_dict()), 200
+    return jsonify({"message": "Student updated"})
 
-
-# DELETE - remove a subject
-@subject_bp.route("/<int:id>", methods=["DELETE"])
-def delete_subject(id):
-    subject = Subject.query.get(id)
-    if not subject:
-        return jsonify({"error": "Subject not found"}), 404
-    
-    db.session.delete(subject)
+# DELETE student
+@student_bp.route("/<int:id>", methods=["DELETE"])
+def delete_student(id):
+    student = Student.query.get_or_404(id)
+    db.session.delete(student)
     db.session.commit()
-    return jsonify({"message": "Subject deleted"}), 200
+    return jsonify({"message": "Student deleted"})
