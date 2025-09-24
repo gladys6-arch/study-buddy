@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from models import db, Session  # assuming you have a Session model
+from models import db, StudySession  # assuming you have a Session model
 
 # Create a Blueprint for session routes
 session_bp = Blueprint("sessions", __name__, url_prefix="/sessions")
