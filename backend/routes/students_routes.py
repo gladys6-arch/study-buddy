@@ -1,42 +1,43 @@
 from flask import Blueprint, jsonify, request
-from models import db, Subject
+from models import db, Student
 
-subject_bp = Blueprint("subjects", __name__, url_prefix="/subjects")
+student_bp = Blueprint("student", __name__, url_prefix="/students")
 
-# GET all subjects
-@subject_bp.route("/", methods=["GET"])
-def get_subjects():
-    subjects = Subject.query.all()
-    return jsonify([{"id": s.id, "name": s.name} for s in subjects])
+# GET all students
+@student_bp.route("/", methods=["GET"])
+def get_students():
+    students = Student.query.all()
+    return jsonify([{"id": s.id, "name": s.name, "email": s.email} for s in students])
 
-# GET single subject
-@subject_bp.route("/<int:id>", methods=["GET"])
-def get_subject(id):
-    subject = Subject.query.get_or_404(id)
-    return jsonify({"id": subject.id, "name": subject.name})
+# GET single student by id
+@student_bp.route("/<int:id>", methods=["GET"])
+def get_student(id):
+    student = Student.query.get_or_404(id)
+    return jsonify({"id": student.id, "name": student.name, "email": student.email})
 
-# POST create subject
-@subject_bp.route("/", methods=["POST"])
-def create_subject():
+# POST create a new student
+@student_bp.route("/", methods=["POST"])
+def create_student():
     data = request.get_json()
-    new_subject = Subject(name=data["name"])
-    db.session.add(new_subject)
+    new_student = Student(name=data["name"], email=data["email"])
+    db.session.add(new_student)
     db.session.commit()
-    return jsonify({"message": "Subject created", "id": new_subject.id}), 201
+    return jsonify({"message": "Student created", "id": new_student.id}), 201
 
-# PUT update subject
-@subject_bp.route("/<int:id>", methods=["PUT"])
-def update_subject(id):
-    subject = Subject.query.get_or_404(id)
+# PUT update student
+@student_bp.route("/<int:id>", methods=["PUT"])
+def update_student(id):
+    student = Student.query.get_or_404(id)
     data = request.get_json()
-    subject.name = data.get("name", subject.name)
+    student.name = data.get("name", student.name)
+    student.email = data.get("email", student.email)
     db.session.commit()
-    return jsonify({"message": "Subject updated"})
+    return jsonify({"message": "Student updated"})
 
-# DELETE subject
-@subject_bp.route("/<int:id>", methods=["DELETE"])
-def delete_subject(id):
-    subject = Subject.query.get_or_404(id)
-    db.session.delete(subject)
+# DELETE student
+@student_bp.route("/<int:id>", methods=["DELETE"])
+def delete_student(id):
+    student = Student.query.get_or_404(id)
+    db.session.delete(student)
     db.session.commit()
-    return jsonify({"message": "Subject deleted"})
+    return jsonify({"message": "Student deleted"})
