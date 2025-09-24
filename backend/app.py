@@ -8,6 +8,11 @@ from routes.subject_routes import subject_bp
 from routes.session_routes import session_bp
 
 
+from routes.session_routes import session_bp
+from routes.user_routes import user_bp
+from routes.subject_routes import subject_bp
+from routes.session_routes import session_bp
+
 
 def create_app():
     app = Flask(__name__)
