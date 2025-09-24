@@ -8,13 +8,11 @@ def get_tutor_subjects():
     tutor_subjects = TutorSubject.query.all()
     return jsonify([ts.to_dict() for ts in tutor_subjects]), 200
 
-
 # GET one tutor-subject by id
 @tutor_subject_bp.route("/<int:id>", methods=["GET"])
 def get_tutor_subject(id):
     ts = TutorSubject.query.get_or_404(id)
     return jsonify(ts.to_dict()), 200
-
 
 # POST create new association
 @tutor_subject_bp.route("/", methods=["POST"])
@@ -28,11 +26,10 @@ def create_tutor_subject():
     db.session.commit()
     return jsonify(new_ts.to_dict()), 201
 
-
 # DELETE association
 @tutor_subject_bp.route("/<int:id>", methods=["DELETE"])
 def delete_tutor_subject(id):
     ts = TutorSubject.query.get_or_404(id)
     db.session.delete(ts)
     db.session.commit()
-    return jsonify({"message": "TutorSubject deleted"}), 200
+    return jsonify({"message": "TutorSubject deleted"}), 200
