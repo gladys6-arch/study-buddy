@@ -1,6 +1,12 @@
 from flask import Flask
 from flask_migrate import Migrate
 from models import db
+from routes.session.routes import session_bp
+
+from routes.user_routes import user_bp
+from routes.subject_routes import subject_bp
+from routes.session_routes import session_bp
+
 
 from routes.session_routes import session_bp
 from routes.user_routes import user_bp
@@ -14,7 +20,9 @@ def create_app():
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
     db.init_app(app)
-    CORS(app)
+    Migrate(app, db)
+
+
 
     
 

@@ -48,12 +48,4 @@ class StudySession(db.Model, SerializerMixin):
     notes = db.Column(db.Text, nullable=True)
     duration_minutes = db.Column(db.Integer)
 
-    student_id = db.Column(db.Integer, db.ForeignKey("students.id"))
-    subject_id = db.Column(db.Integer, db.ForeignKey("subjects.id"))
-
-    # relationships
-    student = db.relationship("Student", back_populates="study_sessions")
-    subject = db.relationship("Subject", back_populates="study_sessions")
-
     serialize_rules = ("-student.study_sessions", "-subject.study_sessions")
-
