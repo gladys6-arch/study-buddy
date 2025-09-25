@@ -4,10 +4,17 @@ import StudySessionForm from "../components/StudySessionForm";
 
 export default function StudySessions() {
   const [sessions, setSessions] = useState([]);
+  const [error, setError] = useState(null);
 
   const loadSessions = async () => {
-    const data = await getStudySessions();
-    setSessions(data);
+    try {
+      const data = await getStudySessions();
+      setSessions(data);
+      setError(null); // clear previous errors if successful
+    } catch (err) {
+      console.error("Failed to fetch study sessions:", err);
+      setError("Could not load study sessions. Please try again later.");
+    }
   };
 
   useEffect(() => {
@@ -20,6 +27,8 @@ export default function StudySessions() {
 
       <StudySessionForm onSuccess={loadSessions} />
 
+      {error && <p className="text-red-500 mb-4">{error}</p>}
+
       <ul className="space-y-2">
         {sessions.map((s) => (
           <li
@@ -27,10 +36,22 @@ export default function StudySessions() {
             className="border rounded p-3 flex justify-between items-center"
           >
             <div>
-              <p><span className="font-semibold">Student:</span> {s.studentId}</p>
-              <p><span className="font-semibold">Subject:</span> {s.subjectId}</p>
-              <p><span className="font-semibold">Tutor:</span> {s.tutorId}</p>
-              <p><span className="font-semibold">Date:</span> {s.date}</p>
+              <p>
+                <span className="font-semibold">Student:</span>{" "}
+                {s.student?.name || s.studentId}
+              </p>
+              <p>
+                <span className="font-semibold">Subject:</span>{" "}
+                {s.subject?.name || s.subjectId}
+              </p>
+              <p>
+                <span className="font-semibold">Tutor:</span>{" "}
+                {s.tutor?.name || s.tutorId}
+              </p>
+              <p>
+                <span className="font-semibold">Date:</span>{" "}
+                {new Date(s.date).toLocaleString()}
+              </p>
             </div>
           </li>
         ))}
