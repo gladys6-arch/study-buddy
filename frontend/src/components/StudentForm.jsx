@@ -1,66 +1,76 @@
-import { Formik, Form, Field, ErrorMessage } from "formik";
-import { createStudent } from "../api/api";
+import { useState } from "react";
+import { createStudySession } from "../api/api";
 
-export default function StudentForm({ onSuccess }) {
+export default function StudySessionForm({ onSuccess }) {
+  const [duration, setDuration] = useState("");
+  const [notes, setNotes] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+
+    try {
+      await createStudySession({
+        duration_minutes: duration,
+        notes,
+      });
+      setDuration("");
+      setNotes("");
+      if (onSuccess) onSuccess(); 
+    } catch (error) {
+      console.error("Error creating study session:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
-    <div className="max-w-md mx-auto bg-white shadow-lg rounded-2xl p-6 border border-gray-100">
+    <form
+      onSubmit={handleSubmit}
+      className="bg-white shadow-lg rounded-xl p-6 space-y-4"
+    >
       <h2 className="text-xl font-semibold text-gray-800 mb-4">
-        Add New Student
+        Create a Study Session
       </h2>
 
-      <Formik
-        initialValues={{ name: "", email: "" }}
-        onSubmit={async (values, { resetForm }) => {
-          await createStudent(values);
-          resetForm();
-          if (onSuccess) onSuccess();
-        }}
+      
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">
+          Duration (minutes)
+        </label>
+        <input
+          type="number"
+          value={duration}
+          onChange={(e) => setDuration(e.target.value)}
+          required
+          className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-orange-400 outline-none"
+          placeholder="e.g. 60"
+        />
+      </div>
+
+      
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">
+          Notes (optional)
+        </label>
+        <textarea
+          value={notes}
+          onChange={(e) => setNotes(e.target.value)}
+          className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-orange-400 outline-none"
+          placeholder="Any details about this session..."
+          rows="3"
+        ></textarea>
+      </div>
+
+      
+      <button
+        type="submit"
+        disabled={loading}
+        className="bg-orange-500 text-white px-6 py-2 rounded-lg font-semibold hover:bg-orange-600 transition-colors duration-200 disabled:opacity-50"
       >
-        <Form className="space-y-4">
-          {/* Name Field */}
-          <div>
-            <Field
-              name="name"
-              placeholder="Student name"
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg 
-                         focus:ring-2 focus:ring-green-500 focus:border-green-500 
-                         outline-none transition duration-200"
-            />
-            <ErrorMessage
-              name="name"
-              component="div"
-              className="text-sm text-red-500 mt-1"
-            />
-          </div>
-
-          {/* Email Field */}
-          <div>
-            <Field
-              name="email"
-              type="email"
-              placeholder="Student email"
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg 
-                         focus:ring-2 focus:ring-green-500 focus:border-green-500 
-                         outline-none transition duration-200"
-            />
-            <ErrorMessage
-              name="email"
-              component="div"
-              className="text-sm text-red-500 mt-1"
-            />
-          </div>
-
-          {/* Submit Button */}
-          <button
-            type="submit"
-            className="w-full bg-green-600 text-white py-2 rounded-lg 
-                       hover:bg-green-700 focus:ring-2 focus:ring-green-400 
-                       focus:outline-none transition duration-200 font-medium shadow"
-          >
-            Add Student
-          </button>
-        </Form>
-      </Formik>
-    </div>
+        {loading ? "Creating..." : "Create Session"}
+      </button>
+    </form>
   );
 }
