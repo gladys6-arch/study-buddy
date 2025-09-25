@@ -1,8 +1,11 @@
 OOOOOOO
 from flask import Flask
-from flask_migrate import Migrate
+
+from flask_migrate import Migrate  
 from flask_cors import CORS
-from models import db  # ✅ because models.py is in the same backend folder
+from models import db
+
+ development
 
 
 from routes.session_routes import session_bp
@@ -18,11 +21,19 @@ def create_app():
     app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///app.db"
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
-    # Init extensions
+
+    # Allow ANY frontend during development
+    CORS(
+    app,
+    resources={r"/api/*": {"origins": ["http://localhost:5173", "http://127.0.0.1:5173"]}}
+)
+
+
     db.init_app(app)
     Migrate(app, db)
-    CORS(app, origins=["http://localhost:5174"])  # ✅ allow frontend to connect
+    CORS(app, origins=["http://localhost:5174"])  
 
+ development
     # Root route
     @app.route("/")
     def home():
@@ -39,8 +50,11 @@ def create_app():
     return app
 
 
+
 if __name__ == "__main__":
-    app = create_app()
-    with app.app_context():
-        db.create_all()  
-    app.run(debug=True, port=5000)
+    create_app().run(debug=True)
+
+
+
+
+development
