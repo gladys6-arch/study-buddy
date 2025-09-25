@@ -13,6 +13,10 @@ export const createStudent = async (student) => {
   return res.data;
 };
 
+export const deleteStudent = async (id) => {
+  return axios.delete(`${API_URL}/students/${id}`);
+};
+
 // ---------- Subjects ----------
 export const getSubjects = async () => {
   const res = await axios.get(`${BASE_URL}/subjects`);
