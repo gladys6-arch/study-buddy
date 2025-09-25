@@ -17,7 +17,7 @@ export default function StudySessionForm({ onSuccess }) {
         }}
       >
         <Form className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {/* Student ID */}
+          
           <div>
             <Field
               name="studentId"
@@ -33,7 +33,7 @@ export default function StudySessionForm({ onSuccess }) {
             />
           </div>
 
-          {/* Subject ID */}
+          
           <div>
             <Field
               name="subjectId"
@@ -49,7 +49,7 @@ export default function StudySessionForm({ onSuccess }) {
             />
           </div>
 
-          {/* Tutor ID */}
+          
           <div>
             <Field
               name="tutorId"
@@ -65,7 +65,7 @@ export default function StudySessionForm({ onSuccess }) {
             />
           </div>
 
-          {/* Date */}
+          
           <div>
             <Field
               name="date"
@@ -81,7 +81,7 @@ export default function StudySessionForm({ onSuccess }) {
             />
           </div>
 
-          {/* Submit Button */}
+          
           <div className="md:col-span-2">
             <button
               type="submit"

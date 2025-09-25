@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const BASE_URL = "http://localhost:5000/api"; // 👈 change if your backend uses another port/path
+const BASE_URL = "http://localhost:5000/api"; 
 
 // ---------- Students ----------
 export const getStudents = async () => {
@@ -37,11 +37,11 @@ export const createTutor = async (tutor) => {
 
 // ---------- Study Sessions ----------
 export const getStudySessions = async () => {
-  const res = await axios.get(`${BASE_URL}/sessions`);
+  const res = await axios.get(`${BASE_URL}/study-sessions`);
   return res.data;
 };
 
 export const createStudySession = async (session) => {
-  const res = await axios.post(`${BASE_URL}/sessions`, session);
+  const res = await axios.post(`${BASE_URL}/study-sessions`, session);
   return res.data;
 };
