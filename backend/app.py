@@ -3,6 +3,7 @@ from flask_migrate import Migrate
 from flask_cors import CORS
 from models import db
 
+# routes
 from routes.session_routes import session_bp
 from routes.students_routes import student_bp
 from routes.subject_routes import subject_bp
@@ -10,18 +11,17 @@ from routes.tutor_routes import tutor_bp
 from routes.tutor_subject_routes import tutor_subject_bp
 from routes.study_session_routes import study_session_bp
 
+
 def create_app():
     app = Flask(__name__)
     app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///app.db"
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
-    #  Allow requests from your React frontend (5173)
-
-    CORS(app, resources={r"/api/*": {"origins": "http://localhost:5173"}})
+    # Allow requests from your React frontend (5173 and 5174 during dev)
+    CORS(app, resources={r"/api/*": {"origins": ["http://localhost:5173", "http://localhost:5174"]}})
 
     db.init_app(app)
     Migrate(app, db)
-
 
     @app.route("/")
     def home():
@@ -35,7 +35,9 @@ def create_app():
     app.register_blueprint(tutor_subject_bp, url_prefix="/api/tutor-subjects")
     app.register_blueprint(study_session_bp, url_prefix="/api/study-sessions")
 
+
     return app
+
 
 if __name__ == "__main__":
     create_app().run(debug=True)
