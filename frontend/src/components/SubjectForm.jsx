@@ -1,29 +1,74 @@
-import { Formik, Form, Field } from "formik";
-import { createSubject } from "../api/api";
+import { useState } from "react";
+import { createStudent } from "../api/api";
 
-export default function SubjectForm({ onSuccess }) {
+export default function StudentForm({ onSuccess }) {
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+
+    try {
+      await createStudent({ name, email });
+      setName("");
+      setEmail("");
+      if (onSuccess) onSuccess(); 
+    } catch (error) {
+      console.error("Error creating student:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
-    <Formik
-      initialValues={{ name: "" }}
-      onSubmit={async (values, { resetForm }) => {
-        await createSubject(values);
-        resetForm();
-        if (onSuccess) onSuccess();
-      }}
+    <form
+      onSubmit={handleSubmit}
+      className="bg-white shadow-lg rounded-xl p-6 space-y-4"
     >
-      <Form className="bg-white shadow-md rounded-lg p-6 w-full max-w-md mx-auto flex gap-3 items-center">
-        <Field
-          name="name"
-          placeholder="Enter subject name"
-          className="flex-1 border border-gray-300 p-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
+      <h2 className="text-xl font-semibold text-gray-800 mb-4">
+        Add a New Student
+      </h2>
+
+      
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">
+          Full Name
+        </label>
+        <input
+          type="text"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          required
+          className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-400 outline-none"
+          placeholder="John Doe"
         />
-        <button
-          type="submit"
-          className="bg-blue-600 text-white px-5 py-2 rounded-lg hover:bg-blue-700 transition-colors duration-200 shadow-sm"
-        >
-          Add
-        </button>
-      </Form>
-    </Formik>
+      </div>
+
+      
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">
+          Email Address
+        </label>
+        <input
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required
+          className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-400 outline-none"
+          placeholder="john@example.com"
+        />
+      </div>
+
+      
+      <button
+        type="submit"
+        disabled={loading}
+        className="bg-green-500 text-white px-6 py-2 rounded-lg font-semibold hover:bg-green-600 transition-colors duration-200 disabled:opacity-50"
+      >
+        {loading ? "Adding..." : "Add Student"}
+      </button>
+    </form>
   );
 }
