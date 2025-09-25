@@ -1,86 +1,76 @@
-import { useEffect, useState } from "react";
-import { getStudents, deleteStudent } from "../api/api";
-import StudentForm from "../components/StudentForm";
+import React, { useEffect, useState } from "react";
+import { getStudents, createStudent, deleteStudent } from "../api/api";
 
-export default function Students() {
+const Students = () => {
   const [students, setStudents] = useState([]);
+  const [newName, setNewName] = useState("");
 
-  const fetchStudents = async () => {
+  // Fetch students on load
+  useEffect(() => {
+    loadStudents();
+  }, []);
+
+  const loadStudents = async () => {
     const data = await getStudents();
     setStudents(data);
   };
 
-  const handleDelete = async (id) => {
-    await deleteStudent(id);
-    fetchStudents();
+  // Add student
+  const handleAdd = async (e) => {
+    e.preventDefault();
+    if (!newName.trim()) return;
+
+    await createStudent({ name: newName });
+    setNewName("");
+    loadStudents(); // refresh
   };
 
-  useEffect(() => {
-    fetchStudents();
-  }, []);
+  // Delete student
+  const handleDelete = async (id) => {
+    await deleteStudent(id);
+    loadStudents(); // refresh after delete
+  };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 to-emerald-100 py-8">
-      <div className="max-w-5xl mx-auto px-6">
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-gray-800 mb-2">Students</h1>
-          <p className="text-gray-600">Manage student registrations</p>
-        </div>
+    <div className="max-w-2xl mx-auto mt-10 p-6 bg-white shadow-lg rounded-2xl">
+      <h2 className="text-2xl font-bold mb-6 text-gray-800">🎓 Students</h2>
 
-        {/* Student Form */}
-        <div className="mb-10">
-          <StudentForm onSuccess={fetchStudents} />
-        </div>
+      {/* Add student form */}
+      <form onSubmit={handleAdd} className="flex items-center gap-3 mb-6">
+        <input
+          type="text"
+          value={newName}
+          placeholder="Enter student name"
+          onChange={(e) => setNewName(e.target.value)}
+          className="flex-1 px-4 py-2 border rounded-lg shadow-sm focus:ring focus:ring-blue-300"
+        />
+        <button
+          type="submit"
+          className="px-4 py-2 bg-blue-600 text-white font-semibold rounded-lg shadow hover:bg-blue-700 transition"
+        >
+          ➕ Add
+        </button>
+      </form>
 
-        {/* Students List */}
-        <div className="bg-white rounded-xl shadow-lg p-8">
-          <h2 className="text-2xl font-semibold text-gray-800 mb-6 flex items-center">
-            <span className="bg-green-100 p-2 rounded-lg mr-3">
-              🎓
-            </span>
-            Enrolled Students
-          </h2>
-          {students.length === 0 ? (
-            <div className="text-center py-12">
-              <div className="text-6xl mb-4">📖</div>
-              <p className="text-gray-500 text-lg">No students enrolled yet. Add the first student above!</p>
-            </div>
-          ) : (
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-              {students.map((student) => (
-                <div
-                  key={student.id}
-                  className="bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 p-6 rounded-xl hover:shadow-md transition-all duration-300 hover:scale-105"
-                >
-                  <div className="flex items-start space-x-4">
-                    <div className="bg-green-500 text-white w-12 h-12 rounded-full flex items-center justify-center font-bold text-lg">
-                      {student.name.charAt(0).toUpperCase()}
-                    </div>
-                    <div className="flex-1">
-                      <h3 className="font-semibold text-gray-800 text-lg mb-1">
-                        {student.name}
-                      </h3>
-                      <p className="text-gray-600 text-sm mb-2">{student.email}</p>
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center text-xs text-green-600 bg-green-100 px-2 py-1 rounded-full w-fit">
-                          <span className="w-2 h-2 bg-blue-400 rounded-full mr-2"></span>
-                          Active
-                        </div>
-                        <button
-                          onClick={() => handleDelete(student.id)}
-                          className="text-red-500 hover:text-red-700 text-sm font-medium"
-                        >
-                          Delete
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-      </div>
+      {/* List students */}
+      <ul className="space-y-3">
+        {students.map((s) => (
+          <li
+            key={s.id}
+            className="flex justify-between items-center px-4 py-2 bg-gray-100 rounded-lg shadow-sm"
+          >
+            <span className="text-gray-800 font-medium">{s.name}</span>
+            <button
+              onClick={() => handleDelete(s.id)}
+              className="px-3 py-1 bg-red-500 text-white text-sm font-semibold rounded-lg shadow hover:bg-red-600 transition"
+            >
+              ❌ Delete
+            </button>
+          </li>
+        ))}
+      </ul>
     </div>
   );
-}
+};
+
+export default Students;
