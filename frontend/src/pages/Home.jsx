@@ -1,29 +1,33 @@
-
 import { useNavigate } from "react-router-dom";
 
+export default function Home() {
+  const navigate = useNavigate();
 
-function Home() {
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 p-8">
-      <div className="max-w-2xl text-center">
-        <h1 className="text-4xl font-extrabold text-blue-600 mb-6">
-          Welcome to Study Buddy 🎓
-        </h1>
-        <p className="text-lg text-gray-700 leading-relaxed mb-6">
-          Study Buddy is your all-in-one platform to manage students, tutors, 
-          subjects, and study sessions with ease. Whether you’re a student trying 
-          to organize your schedule, a tutor managing multiple classes, or an 
-          administrator keeping track of everything — Study Buddy helps you stay 
-          productive and connected.
-        </p>
-        <p className="text-md text-gray-600">
-          Use the navigation above to explore students, tutors, subjects, and study 
-          sessions. Get started today and simplify the way you learn and teach!
-        </p>
-      </div>
+    <div className="text-center p-8 max-w-2xl mx-auto">
+      <h1 className="text-4xl font-extrabold text-blue-600 mb-6">
+        Welcome to Study Buddy 🎓
+      </h1>
+
+      <p className="text-gray-700 mb-6 leading-relaxed">
+        Study Buddy is your all-in-one platform for managing students, tutors, 
+        subjects, and study sessions. Whether you’re a teacher keeping track 
+        of classes, a tutor scheduling sessions, or a student looking to stay 
+        organized — this app helps you streamline everything in one place.
+      </p>
+
+      <p className="text-gray-600 mb-8">
+        Use the navigation above to explore students, subjects, tutors, 
+        or jump straight into planning your study sessions. Start building 
+        a smarter and more organized study experience today!
+      </p>
+
+      <button
+        onClick={() => navigate("/students")}
+        className="px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition"
+      >
+        View Students
+      </button>
     </div>
   );
 }
-
-export default Home;
-
