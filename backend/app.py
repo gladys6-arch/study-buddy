@@ -1,5 +1,6 @@
 from flask import Flask
-from flask_migrate import Migrate
+from flask_migrate import Migrate  
+from flask_cors import CORS
 from models import db
 
 
@@ -17,28 +18,29 @@ def create_app():
     app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///app.db"
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
+
+    # Allow ANY frontend during development
+    CORS(app, resources={r"/api/*": {"origins": "*"}})
+
     db.init_app(app)
     Migrate(app, db)
+    CORS(app, origins=["http://localhost:5174"])  
 
-
-
-    
-
+    # Root route
     @app.route("/")
     def home():
-        return {"message": "Study Buddy API is running"}
+        return {"message": "Study Buddy API is running 🚀"}
 
-
-    app.register_blueprint(student_bp)
-    app.register_blueprint(subject_bp)
-    app.register_blueprint(tutor_bp)
-    app.register_blueprint(session_bp)
-    app.register_blueprint(tutor_subject_bp)
-    app.register_blueprint(study_session_bp)
-
-
+    # Register blueprints
+    app.register_blueprint(student_bp, url_prefix="/api/students")
+    app.register_blueprint(subject_bp, url_prefix="/api/subjects")
+    app.register_blueprint(tutor_bp, url_prefix="/api/tutors")
+    app.register_blueprint(session_bp, url_prefix="/api/sessions")
+    app.register_blueprint(tutor_subject_bp, url_prefix="/api/tutor-subjects")
+    app.register_blueprint(study_session_bp, url_prefix="/api/study-sessions")
 
     return app
+
 
 if __name__ == "__main__":
     create_app().run(debug=True)
@@ -79,6 +81,3 @@ if __name__ == "__main__":
 
 
 
-
-#backend coding
-#hello
