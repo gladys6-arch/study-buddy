@@ -1,8 +1,11 @@
+OOOOOOO
 from flask import Flask
+
 from flask_migrate import Migrate  
 from flask_cors import CORS
 from models import db
 
+ development
 
 
 from routes.session_routes import session_bp
@@ -30,6 +33,7 @@ def create_app():
     Migrate(app, db)
     CORS(app, origins=["http://localhost:5174"])  
 
+ development
     # Root route
     @app.route("/")
     def home():
@@ -46,42 +50,11 @@ def create_app():
     return app
 
 
+
 if __name__ == "__main__":
     create_app().run(debug=True)
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+development
