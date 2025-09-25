@@ -1,5 +1,6 @@
 from flask import Flask
 from flask_migrate import Migrate
+from flask_cors import CORS
 from models import db
 
 
@@ -16,6 +17,10 @@ def create_app():
     app = Flask(__name__)
     app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///app.db"
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+
+
+    # Allow ANY frontend during development
+    CORS(app, resources={r"/api/*": {"origins": "*"}})
 
     db.init_app(app)
     Migrate(app, db)
@@ -79,6 +84,3 @@ if __name__ == "__main__":
 
 
 
-
-#backend coding
-#hello
