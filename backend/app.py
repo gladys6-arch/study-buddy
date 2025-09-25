@@ -1,5 +1,5 @@
 from flask import Flask
-from flask_migrate import Migrate  
+from flask_migrate import Migrate 
 from flask_cors import CORS
 from models import db
 
@@ -15,13 +15,14 @@ def create_app():
     app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///app.db"
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
-    # ✅ Allow requests from your React frontend (5173)
+    #  Allow requests from your React frontend (5173)
+
     CORS(app, resources={r"/api/*": {"origins": "http://localhost:5173"}})
 
     db.init_app(app)
     Migrate(app, db)
 
-    # Root route
+
     @app.route("/")
     def home():
         return {"message": "Study Buddy API is running 🚀"}
