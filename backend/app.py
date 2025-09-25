@@ -3,6 +3,7 @@ from flask_migrate import Migrate
 from flask_cors import CORS
 from models import db
 
+#routes from routes
 from routes.session_routes import session_bp
 from routes.students_routes import student_bp
 from routes.subject_routes import subject_bp
@@ -21,7 +22,7 @@ def create_app():
     db.init_app(app)
     Migrate(app, db)
 
-    
+    #routes
     @app.route("/")
     def home():
         return {"message": "Study Buddy API is running 🚀"}
@@ -38,3 +39,5 @@ def create_app():
 
 if __name__ == "__main__":
     create_app().run(debug=True)
+
+    
