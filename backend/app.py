@@ -1,47 +1,56 @@
-from flask import Flask
-from flask_migrate import Migrate
-from models import db
+from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy_serializer import SerializerMixin
+
+db = SQLAlchemy()
+
+tutor_subjects = db.Table(
+    "tutor_subjects",
+    db.Column("tutor_id", db.Integer, db.ForeignKey("tutors.id"), primary_key=True),
+    db.Column("subject_id", db.Integer, db.ForeignKey("subjects.id"), primary_key=True)
+)
+
+
+class Student(db.Model, SerializerMixin):
+  __tablename__ = "students"
+
+  id = db.Column(db.Integer, primary_key=True)
+  name= db.Column(db.String, nullable=False)
+
+  study_sessions=db.relationship("StudySession", back_populates="students")
+
+  serialize_rules = ("-study_sessions.student",)
+
+class Subject(db.Model, SerializerMixin):
+  __tablename__ = "subjects"
+
+  id = db.Column(db.Integer, primary_key=True)
+  name =db.Column(db.String, nullable=False)
+
+  tutors=db.relationship("Tutor", back_populates="subjects")
+  serialize_rules = ("-study_sessions.subject", "-tutors.subjects")
 
 
 
-from routes.session_routes import session_bp
-from routes.students_routes import student_bp
-from routes.subject_routes import subject_bp
-from routes.tutor_routes import tutor_bp
-from routes.tutor_subject_routes import tutor_subject_bp
-from routes.study_session_routes import study_session_bp
+class Tutor(db.Model, SerializerMixin):
+  __tablename__ = "tutors"
+
+  id= db.Column(db.Integer, primary_key=True)
+  name = db.Column(db.String, nullable=False)
+
+  subjects = db.relationship("Subject", back_populates="tutors")
+  serialize_rules = ("-subjects.tutors",)
 
 
-def create_app():
-    app = Flask(__name__)
-    app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///app.db"
-    app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+class StudySession(db.Model, SerializerMixin):
+    __tablename__ = "study_sessions"
 
-    db.init_app(app)
-    Migrate(app, db)
+    id = db.Column(db.Integer, primary_key=True)
+    notes = db.Column(db.Text, nullable=True)
+    duration_minutes = db.Column(db.Integer)
 
-
-
-    
-
-    @app.route("/")
-    def home():
-        return {"message": "Study Buddy API is running"}
+    serialize_rules = ("-student.study_sessions", "-subject.study_sessions")
 
 
-    app.register_blueprint(student_bp)
-    app.register_blueprint(subject_bp)
-    app.register_blueprint(tutor_bp)
-    app.register_blueprint(session_bp)
-    app.register_blueprint(tutor_subject_bp)
-    app.register_blueprint(study_session_bp)
-
-
-
-    return app
-
-if __name__ == "__main__":
-    create_app().run(debug=True)
 
 
 
