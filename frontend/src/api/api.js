@@ -14,7 +14,7 @@ export const createStudent = async (student) => {
 };
 
 export const deleteStudent = async (id) => {
-  return axios.delete(`${API_URL}/students/${id}`);
+  return axios.delete(`${BASE_URL}/students/${id}`);
 };
 
 // ---------- Subjects ----------
@@ -49,3 +49,4 @@ export const createStudySession = async (session) => {
   const res = await axios.post(`${BASE_URL}/study-sessions`, session);
   return res.data;
 };
+
