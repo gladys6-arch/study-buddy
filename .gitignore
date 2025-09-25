@@ -1,0 +1,8 @@
+_pycache_/
+*.pyc__pycache__/
+
+# Python
+__pycache__/
+*.pyc
+venv/
+
