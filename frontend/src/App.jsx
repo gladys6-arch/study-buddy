@@ -4,7 +4,7 @@ import Home from "./pages/Home";
 import Students from "./pages/Students";
 import Subjects from "./pages/Subjects";
 import Tutors from "./pages/Tutors";
-import StudySession from "./pages/StudySession";
+import StudySessions from "./pages/StudySessions"
 
 
 
