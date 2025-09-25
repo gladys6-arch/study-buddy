@@ -5,7 +5,7 @@ from flask_migrate import Migrate
 from flask_cors import CORS
 from models import db
 
- development
+ 
 
 
 from routes.session_routes import session_bp
@@ -33,7 +33,7 @@ def create_app():
     Migrate(app, db)
     CORS(app, origins=["http://localhost:5174"])  
 
- development
+ 
     # Root route
     @app.route("/")
     def home():
