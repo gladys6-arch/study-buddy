@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getStudySessions } from "../api/api";
+import { getStudySessions, deleteStudySession } from "../api/api";
 import StudySessionForm from "../components/StudySessionForm";
 
 export default function StudySessions() {
@@ -10,8 +10,26 @@ export default function StudySessions() {
   }, []);
 
   function fetchSessions() {
-    getStudySessions().then((data) => setSessions(data));
+    getStudySessions()
+      .then((data) => {
+        console.log('Study sessions data:', data);
+        setSessions(data);
+      })
+      .catch((error) => {
+        console.error('Error fetching study sessions:', error);
+      });
   }
+
+  const handleDelete = async (id) => {
+    if (window.confirm('Are you sure you want to delete this study session?')) {
+      try {
+        await deleteStudySession(id);
+        fetchSessions();
+      } catch (error) {
+        console.error('Error deleting study session:', error);
+      }
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-orange-50 to-red-100 py-8">
@@ -70,9 +88,17 @@ export default function StudySessions() {
                     
                     <div className="flex items-center justify-between pt-3 border-t border-orange-100">
                       <span className="text-xs text-gray-500">Session #{session.id}</span>
-                      <div className="flex items-center text-xs text-green-600">
-                        <span className="w-2 h-2 bg-green-400 rounded-full mr-1"></span>
-                        In Progress
+                      <div className="flex items-center gap-2">
+                        <div className="flex items-center text-xs text-green-600">
+                          <span className="w-2 h-2 bg-green-400 rounded-full mr-1"></span>
+                          In Progress
+                        </div>
+                        <button
+                          onClick={() => handleDelete(session.id)}
+                          className="text-red-500 hover:text-red-700 text-xs font-medium"
+                        >
+                          Delete
+                        </button>
                       </div>
                     </div>
                   </div>

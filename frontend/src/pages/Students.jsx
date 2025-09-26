@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { getStudents, createStudent, deleteStudent } from "../api/api";
+import { getStudents, createStudent, deleteStudent, updateStudent } from "../api/api";
 
 const Students = () => {
   const [students, setStudents] = useState([]);
   const [newName, setNewName] = useState("");
+  const [editingStudent, setEditingStudent] = useState(null);
+  const [editName, setEditName] = useState("");
 
   // Fetch students on load
   useEffect(() => {
@@ -29,6 +31,29 @@ const Students = () => {
   const handleDelete = async (id) => {
     await deleteStudent(id);
     loadStudents(); // refresh after delete
+  };
+
+  // Edit student
+  const handleEdit = (student) => {
+    setEditingStudent(student);
+    setEditName(student.name);
+  };
+
+  // Update student
+  const handleUpdate = async (e) => {
+    e.preventDefault();
+    if (!editName.trim()) return;
+    
+    await updateStudent(editingStudent.id, { name: editName });
+    setEditingStudent(null);
+    setEditName("");
+    loadStudents();
+  };
+
+  // Cancel edit
+  const handleCancelEdit = () => {
+    setEditingStudent(null);
+    setEditName("");
   };
 
   return (
@@ -59,13 +84,47 @@ const Students = () => {
             key={s.id}
             className="flex justify-between items-center px-4 py-2 bg-gray-100 rounded-lg shadow-sm"
           >
-            <span className="text-gray-800 font-medium">{s.name}</span>
-            <button
-              onClick={() => handleDelete(s.id)}
-              className="px-3 py-1 bg-red-500 text-white text-sm font-semibold rounded-lg shadow hover:bg-red-600 transition"
-            >
-              ❌ Delete
-            </button>
+            {editingStudent?.id === s.id ? (
+              <form onSubmit={handleUpdate} className="flex gap-2 flex-1">
+                <input
+                  type="text"
+                  value={editName}
+                  onChange={(e) => setEditName(e.target.value)}
+                  className="flex-1 px-2 py-1 border rounded"
+                />
+                <button
+                  type="submit"
+                  className="px-3 py-1 bg-green-500 text-white text-sm rounded hover:bg-green-600"
+                >
+                  Save
+                </button>
+                <button
+                  type="button"
+                  onClick={handleCancelEdit}
+                  className="px-3 py-1 bg-gray-500 text-white text-sm rounded hover:bg-gray-600"
+                >
+                  Cancel
+                </button>
+              </form>
+            ) : (
+              <>
+                <span className="text-gray-800 font-medium">{s.name}</span>
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => handleEdit(s)}
+                    className="px-3 py-1 bg-blue-500 text-white text-sm font-semibold rounded-lg shadow hover:bg-blue-600 transition"
+                  >
+                    ✏️ Edit
+                  </button>
+                  <button
+                    onClick={() => handleDelete(s.id)}
+                    className="px-3 py-1 bg-red-500 text-white text-sm font-semibold rounded-lg shadow hover:bg-red-600 transition"
+                  >
+                    ❌ Delete
+                  </button>
+                </div>
+              </>
+            )}
           </li>
         ))}
       </ul>

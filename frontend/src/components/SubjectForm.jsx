@@ -1,66 +1,76 @@
-import { Formik, Form, Field, ErrorMessage } from "formik";
-import { createStudent } from "../api/api";
+import { useState, useEffect } from "react";
+import { createSubject } from "../api/api";
 
-export default function StudentForm({ onSuccess }) {
+export default function SubjectForm({ onSuccess, initialData, onCancel, isEditing }) {
+  const [name, setName] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (initialData) {
+      setName(initialData.name || "");
+    }
+  }, [initialData]);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+
+    try {
+      if (isEditing) {
+        await onSuccess({ name });
+      } else {
+        await createSubject({ name });
+        setName("");
+        if (onSuccess) onSuccess();
+      }
+    } catch (error) {
+      console.error("Error with subject:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
-    <div className="max-w-md mx-auto bg-white shadow-lg rounded-2xl p-6 border border-gray-100">
+    <form
+      onSubmit={handleSubmit}
+      className="bg-white shadow-lg rounded-xl p-6 space-y-4"
+    >
       <h2 className="text-xl font-semibold text-gray-800 mb-4">
-        Add New Student
+        {isEditing ? "Edit Subject" : "Add Subject"}
       </h2>
 
-      <Formik
-        initialValues={{ name: "", email: "" }}
-        onSubmit={async (values, { resetForm }) => {
-          await createStudent(values);
-          resetForm();
-          if (onSuccess) onSuccess();
-        }}
-      >
-        <Form className="space-y-4">
-          {/* Name Field */}
-          <div>
-            <Field
-              name="name"
-              placeholder="Student name"
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg 
-                         focus:ring-2 focus:ring-green-500 focus:border-green-500 
-                         outline-none transition duration-200"
-            />
-            <ErrorMessage
-              name="name"
-              component="div"
-              className="text-sm text-red-500 mt-1"
-            />
-          </div>
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">
+          Subject Name
+        </label>
+        <input
+          type="text"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          required
+          className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-400 outline-none"
+          placeholder="Subject name"
+        />
+      </div>
 
-          {/* Email Field */}
-          <div>
-            <Field
-              name="email"
-              type="email"
-              placeholder="Student email"
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg 
-                         focus:ring-2 focus:ring-green-500 focus:border-green-500 
-                         outline-none transition duration-200"
-            />
-            <ErrorMessage
-              name="email"
-              component="div"
-              className="text-sm text-red-500 mt-1"
-            />
-          </div>
-
-          {/* Submit Button */}
+      <div className="flex gap-2">
+        <button
+          type="submit"
+          disabled={loading}
+          className="bg-blue-500 text-white px-6 py-2 rounded-lg font-semibold hover:bg-blue-600 transition-colors duration-200 disabled:opacity-50"
+        >
+          {loading ? (isEditing ? "Updating..." : "Adding...") : (isEditing ? "Update Subject" : "Add Subject")}
+        </button>
+        {isEditing && (
           <button
-            type="submit"
-            className="w-full bg-green-600 text-white py-2 rounded-lg 
-                       hover:bg-green-700 focus:ring-2 focus:ring-green-400 
-                       focus:outline-none transition duration-200 font-medium shadow"
+            type="button"
+            onClick={onCancel}
+            className="bg-gray-500 text-white px-6 py-2 rounded-lg font-semibold hover:bg-gray-600 transition-colors duration-200"
           >
-            Add Student
+            Cancel
           </button>
-        </Form>
-      </Formik>
-    </div>
+        )}
+      </div>
+    </form>
   );
 }

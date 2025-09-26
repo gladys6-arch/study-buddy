@@ -1,17 +1,54 @@
 import { useEffect, useState } from "react";
-import { getTutors } from "../api/api";
+import { getTutors, deleteTutor, updateTutor } from "../api/api";
 import TutorForm from "../components/TutorForm";
 
 export default function Tutors() {
   const [tutors, setTutors] = useState([]);
+  const [editingTutor, setEditingTutor] = useState(null);
 
   useEffect(() => {
     fetchTutors();
   }, []);
 
   function fetchTutors() {
-    getTutors().then((data) => setTutors(data));
+    getTutors()
+      .then((data) => {
+        console.log('Tutors data:', data);
+        setTutors(data);
+      })
+      .catch((error) => {
+        console.error('Error fetching tutors:', error);
+      });
   }
+
+  const handleDelete = async (id) => {
+    if (window.confirm('Are you sure you want to delete this tutor?')) {
+      try {
+        await deleteTutor(id);
+        fetchTutors();
+      } catch (error) {
+        console.error('Error deleting tutor:', error);
+      }
+    }
+  };
+
+  const handleEdit = (tutor) => {
+    setEditingTutor(tutor);
+  };
+
+  const handleUpdate = async (updatedData) => {
+    try {
+      await updateTutor(editingTutor.id, updatedData);
+      setEditingTutor(null);
+      fetchTutors();
+    } catch (error) {
+      console.error('Error updating tutor:', error);
+    }
+  };
+
+  const handleCancelEdit = () => {
+    setEditingTutor(null);
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 to-indigo-100 py-8">
@@ -23,7 +60,19 @@ export default function Tutors() {
 
         {/* Tutor Form */}
         <div className="mb-10">
-          <TutorForm onSuccess={fetchTutors} />
+          {editingTutor ? (
+            <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-6">
+              <h3 className="text-lg font-semibold mb-4">Edit Tutor</h3>
+              <TutorForm 
+                initialData={editingTutor}
+                onSuccess={handleUpdate}
+                onCancel={handleCancelEdit}
+                isEditing={true}
+              />
+            </div>
+          ) : (
+            <TutorForm onSuccess={fetchTutors} />
+          )}
         </div>
 
         {/* Tutors List */}
@@ -55,9 +104,25 @@ export default function Tutors() {
                         {tutor.name}
                       </h3>
                       <p className="text-gray-600 text-sm mb-2">{tutor.email}</p>
-                      <div className="flex items-center text-xs text-purple-600 bg-purple-100 px-2 py-1 rounded-full w-fit">
-                        <span className="w-2 h-2 bg-green-400 rounded-full mr-2"></span>
-                        Available
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center text-xs text-purple-600 bg-purple-100 px-2 py-1 rounded-full w-fit">
+                          <span className="w-2 h-2 bg-green-400 rounded-full mr-2"></span>
+                          Available
+                        </div>
+                        <div className="flex gap-2">
+                          <button
+                            onClick={() => handleEdit(tutor)}
+                            className="text-blue-500 hover:text-blue-700 text-sm font-medium"
+                          >
+                            Edit
+                          </button>
+                          <button
+                            onClick={() => handleDelete(tutor.id)}
+                            className="text-red-500 hover:text-red-700 text-sm font-medium"
+                          >
+                            Delete
+                          </button>
+                        </div>
                       </div>
                     </div>
                   </div>
