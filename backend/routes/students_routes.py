@@ -1,7 +1,7 @@
 from flask import Blueprint, jsonify, request
 from models import db, Student
 
-student_bp = Blueprint("student", __name__, url_prefix="/students")
+student_bp = Blueprint("student", __name__)
 
 # GET all students
 @student_bp.route("/", methods=["GET"])
@@ -19,7 +19,7 @@ def get_student(id):
 @student_bp.route("/", methods=["POST"])
 def create_student():
     data = request.get_json()
-    new_student = Student(name=data["name"], email=data["email"])
+    new_student = Student(name=data["name"], email=data.get("email"))
     db.session.add(new_student)
     db.session.commit()
     return jsonify({"message": "Student created", "id": new_student.id}), 201
@@ -38,6 +38,9 @@ def update_student(id):
 @student_bp.route("/<int:id>", methods=["DELETE"])
 def delete_student(id):
     student = Student.query.get_or_404(id)
+    # Delete related study sessions first
+    for session in student.study_sessions:
+        db.session.delete(session)
     db.session.delete(student)
     db.session.commit()
     return jsonify({"message": "Student deleted"})

@@ -1,7 +1,7 @@
 from flask import Blueprint, jsonify, request
 from models import db, Tutor
 
-tutor_bp = Blueprint("tutor", __name__, url_prefix="/tutors")
+tutor_bp = Blueprint("tutor", __name__)
 
 @tutor_bp.route("/", methods=["GET"])
 def get_tutors():
@@ -33,6 +33,9 @@ def update_tutor(id):
 @tutor_bp.route("/<int:id>", methods=["DELETE"])
 def delete_tutor(id):
     tutor = Tutor.query.get_or_404(id)
+    # Delete related tutor-subject relationships first
+    for tutor_subject in tutor.subjects:
+        db.session.delete(tutor_subject)
     db.session.delete(tutor)
     db.session.commit()
     return jsonify({"message": "Tutor deleted"}), 200

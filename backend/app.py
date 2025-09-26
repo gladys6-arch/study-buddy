@@ -1,13 +1,9 @@
-
 from flask import Flask
-
-from flask_migrate import Migrate  
+from flask_migrate import Migrate 
 from flask_cors import CORS
 from models import db
 
- 
-
-
+# routes
 from routes.session_routes import session_bp
 from routes.students_routes import student_bp
 from routes.subject_routes import subject_bp
@@ -22,19 +18,15 @@ def create_app():
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 
-    # Allow ANY frontend during development
-    CORS(
-    app,
-    resources={r"/api/*": {"origins": ["http://localhost:5173", "http://127.0.0.1:5173"]}}
-)
+
+
+    CORS(app, origins="*")
+
 
 
     db.init_app(app)
     Migrate(app, db)
-    CORS(app, origins=["http://localhost:5174"])  
 
- 
-    # Root route
     @app.route("/")
     def home():
         return {"message": "Study Buddy API is running 🚀"}
@@ -50,11 +42,5 @@ def create_app():
     return app
 
 
-
 if __name__ == "__main__":
     create_app().run(debug=True)
-
-
-
-
-

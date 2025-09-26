@@ -1,99 +1,64 @@
-import { Formik, Form, Field, ErrorMessage } from "formik";
+import { useState } from "react";
 import { createStudySession } from "../api/api";
 
 export default function StudySessionForm({ onSuccess }) {
+  const [duration, setDuration] = useState("");
+  const [notes, setNotes] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+
+    try {
+      await createStudySession({
+        duration_minutes: duration,
+        notes,
+      });
+      setDuration("");
+      setNotes("");
+      if (onSuccess) onSuccess(); 
+    } catch (error) {
+      console.error("Error creating study session:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
-    <div className="max-w-2xl mx-auto bg-white shadow-lg rounded-2xl p-6 border border-gray-100">
-      <h2 className="text-xl font-semibold text-gray-800 mb-4">
-        Schedule Study Session
-      </h2>
+    <form onSubmit={handleSubmit} className="bg-white shadow-lg rounded-xl p-6 space-y-4">
+      <h2 className="text-xl font-semibold text-gray-800 mb-4">Create Study Session</h2>
 
-      <Formik
-        initialValues={{ studentId: "", subjectId: "", tutorId: "", date: "" }}
-        onSubmit={async (values, { resetForm }) => {
-          await createStudySession(values);
-          resetForm();
-          if (onSuccess) onSuccess();
-        }}
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">Duration (minutes)</label>
+        <input
+          type="number"
+          value={duration}
+          onChange={(e) => setDuration(e.target.value)}
+          required
+          className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-orange-400 outline-none"
+          placeholder="e.g. 60"
+        />
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">Notes (optional)</label>
+        <textarea
+          value={notes}
+          onChange={(e) => setNotes(e.target.value)}
+          className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-orange-400 outline-none"
+          placeholder="Any details about this session..."
+          rows="3"
+        ></textarea>
+      </div>
+
+      <button
+        type="submit"
+        disabled={loading}
+        className="bg-orange-500 text-white px-6 py-2 rounded-lg font-semibold hover:bg-orange-600 transition-colors duration-200 disabled:opacity-50"
       >
-        <Form className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {/* Student ID */}
-          <div>
-            <Field
-              name="studentId"
-              placeholder="Student ID"
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg 
-                         focus:ring-2 focus:ring-purple-500 focus:border-purple-500 
-                         outline-none transition duration-200"
-            />
-            <ErrorMessage
-              name="studentId"
-              component="div"
-              className="text-sm text-red-500 mt-1"
-            />
-          </div>
-
-          {/* Subject ID */}
-          <div>
-            <Field
-              name="subjectId"
-              placeholder="Subject ID"
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg 
-                         focus:ring-2 focus:ring-purple-500 focus:border-purple-500 
-                         outline-none transition duration-200"
-            />
-            <ErrorMessage
-              name="subjectId"
-              component="div"
-              className="text-sm text-red-500 mt-1"
-            />
-          </div>
-
-          {/* Tutor ID */}
-          <div>
-            <Field
-              name="tutorId"
-              placeholder="Tutor ID"
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg 
-                         focus:ring-2 focus:ring-purple-500 focus:border-purple-500 
-                         outline-none transition duration-200"
-            />
-            <ErrorMessage
-              name="tutorId"
-              component="div"
-              className="text-sm text-red-500 mt-1"
-            />
-          </div>
-
-          {/* Date */}
-          <div>
-            <Field
-              name="date"
-              type="date"
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg 
-                         focus:ring-2 focus:ring-purple-500 focus:border-purple-500 
-                         outline-none transition duration-200"
-            />
-            <ErrorMessage
-              name="date"
-              component="div"
-              className="text-sm text-red-500 mt-1"
-            />
-          </div>
-
-          {/* Submit Button */}
-          <div className="md:col-span-2">
-            <button
-              type="submit"
-              className="w-full bg-purple-600 text-white py-2 rounded-lg 
-                         hover:bg-purple-700 focus:ring-2 focus:ring-purple-400 
-                         focus:outline-none transition duration-200 font-medium shadow"
-            >
-              Add Session
-            </button>
-          </div>
-        </Form>
-      </Formik>
-    </div>
+        {loading ? "Creating..." : "Create Session"}
+      </button>
+    </form>
   );
 }

@@ -6,21 +6,18 @@ import Tutors from "./pages/Tutors";
 import Subjects from "./pages/Subjects";
 import StudySessions from "./pages/StudySessions";
 
-function App() {
+export default function App() {
   return (
     <>
       <Navbar />
-      <div className="p-6">
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/students" element={<Students />} />
-          <Route path="/tutors" element={<Tutors />} />
-          <Route path="/subjects" element={<Subjects />} />
-          <Route path="/study-sessions" element={<StudySessions />} />
-        </Routes>
-      </div>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/students" element={<Students />} />
+        <Route path="/tutors" element={<Tutors />} />
+        <Route path="/subjects" element={<Subjects />} />
+        <Route path="/study-sessions" element={<StudySessions />} />
+        <Route path="*" element={<div className="p-10 text-center">Page Not Found</div>} />
+      </Routes>
     </>
   );
 }
-
-export default App;
