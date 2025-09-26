@@ -49,4 +49,3 @@ export const createStudySession = async (session) => {
   const res = await axios.post(`${BASE_URL}/study-sessions`, session);
   return res.data;
 };
-
