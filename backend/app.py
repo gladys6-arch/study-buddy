@@ -17,8 +17,12 @@ def create_app():
     app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///app.db"
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
-    # Allow requests from your React frontend (5173 and 5174 during dev)
-    CORS(app, resources={r"/api/*": {"origins": ["http://localhost:5173", "http://localhost:5174"]}})
+
+    
+    CORS(app, origins=["http://localhost:5173", "http://localhost:5174"])
+
+
+
 
     db.init_app(app)
     Migrate(app, db)
