@@ -19,8 +19,8 @@ def create_app():
 
 
     
-    allowed_origins = ["http://localhost:5173", "http://localhost:5174"]
-    CORS(app, supports_credentials=True, resources={r"/api/*": {"origins": allowed_origins}})
+    CORS(app, origins=["http://localhost:5173", "http://localhost:5174"])
+
 
 
 
