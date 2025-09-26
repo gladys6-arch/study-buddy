@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
-import { getSubjects } from "../api/api";
+import { getSubjects, deleteSubject, updateSubject } from "../api/api";
 import SubjectForm from "../components/SubjectForm";
 
 export default function Subjects() {
   const [subjects, setSubjects] = useState([]);
+  const [editingSubject, setEditingSubject] = useState(null);
 
   useEffect(() => {
     fetchSubjects();
@@ -12,6 +13,35 @@ export default function Subjects() {
   function fetchSubjects() {
     getSubjects().then((data) => setSubjects(data));
   }
+
+  const handleDelete = async (id) => {
+    if (window.confirm('Are you sure you want to delete this subject?')) {
+      try {
+        await deleteSubject(id);
+        fetchSubjects();
+      } catch (error) {
+        console.error('Error deleting subject:', error);
+      }
+    }
+  };
+
+  const handleEdit = (subject) => {
+    setEditingSubject(subject);
+  };
+
+  const handleUpdate = async (updatedData) => {
+    try {
+      await updateSubject(editingSubject.id, updatedData);
+      setEditingSubject(null);
+      fetchSubjects();
+    } catch (error) {
+      console.error('Error updating subject:', error);
+    }
+  };
+
+  const handleCancelEdit = () => {
+    setEditingSubject(null);
+  };
 
   return (
     <div className="min-h-screen bg-gray-50 py-8">
@@ -23,7 +53,19 @@ export default function Subjects() {
 
         {/* Subject Form */}
         <div className="mb-8">
-          <SubjectForm onSuccess={fetchSubjects} />
+          {editingSubject ? (
+            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-6">
+              <h3 className="text-lg font-semibold mb-4">Edit Subject</h3>
+              <SubjectForm 
+                initialData={editingSubject}
+                onSuccess={handleUpdate}
+                onCancel={handleCancelEdit}
+                isEditing={true}
+              />
+            </div>
+          ) : (
+            <SubjectForm onSuccess={fetchSubjects} />
+          )}
         </div>
 
         {/* Subjects List */}
@@ -40,9 +82,25 @@ export default function Subjects() {
                 >
                   <div className="flex justify-between items-center">
                     <span className="text-gray-800 font-medium">{subject.name}</span>
-                    <span className="text-sm text-gray-500 bg-blue-100 px-2 py-1 rounded-full">
-                      Subject #{subject.id}
-                    </span>
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm text-gray-500 bg-blue-100 px-2 py-1 rounded-full">
+                        Subject #{subject.id}
+                      </span>
+                      <div className="flex gap-2">
+                        <button
+                          onClick={() => handleEdit(subject)}
+                          className="text-blue-500 hover:text-blue-700 text-sm font-medium px-2 py-1 rounded"
+                        >
+                          Edit
+                        </button>
+                        <button
+                          onClick={() => handleDelete(subject.id)}
+                          className="text-red-500 hover:text-red-700 text-sm font-medium px-2 py-1 rounded"
+                        >
+                          Delete
+                        </button>
+                      </div>
+                    </div>
                   </div>
                 </li>
               ))}

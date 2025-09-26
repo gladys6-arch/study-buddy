@@ -18,9 +18,9 @@ def create_app():
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 
-    
-    CORS(app, origins=["http://localhost:5173", "http://localhost:5174"])
 
+
+    CORS(app, origins="*")
 
 
 
@@ -38,7 +38,6 @@ def create_app():
     app.register_blueprint(session_bp, url_prefix="/api/sessions")
     app.register_blueprint(tutor_subject_bp, url_prefix="/api/tutor-subjects")
     app.register_blueprint(study_session_bp, url_prefix="/api/study-sessions")
-
 
     return app
 
