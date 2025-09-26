@@ -61,8 +61,8 @@ class StudySession(db.Model, SerializerMixin):
     duration_minutes = db.Column(db.Integer)
     description = db.Column(db.String)
 
-    student_id = db.Column(db.Integer, db.ForeignKey("students.id"), nullable=False)
-    subject_id = db.Column(db.Integer, db.ForeignKey("subjects.id"), nullable=False)
+    student_id = db.Column(db.Integer, db.ForeignKey("students.id"), nullable=True)
+    subject_id = db.Column(db.Integer, db.ForeignKey("subjects.id"), nullable=True)
 
     student = db.relationship("Student", back_populates="study_sessions")
     subject = db.relationship("Subject", back_populates="study_sessions")
