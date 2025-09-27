@@ -26,8 +26,8 @@ export default function StudySessionForm({ onSuccess }) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="bg-white shadow-lg rounded-xl p-6 space-y-4">
-      <h2 className="text-xl font-semibold text-gray-800 mb-4">Create Study Session</h2>
+    <form onSubmit={handleSubmit} className="bg-white shadow-lg rounded-xl p-4 sm:p-6 space-y-4 mx-4 sm:mx-0">
+      <h2 className="text-lg sm:text-xl font-semibold text-gray-800 mb-4">Create Study Session</h2>
 
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-1">Duration (minutes)</label>
@@ -55,7 +55,7 @@ export default function StudySessionForm({ onSuccess }) {
       <button
         type="submit"
         disabled={loading}
-        className="bg-orange-500 text-white px-6 py-2 rounded-lg font-semibold hover:bg-orange-600 transition-colors duration-200 disabled:opacity-50"
+        className="w-full sm:w-auto bg-orange-500 text-white px-6 py-2 rounded-lg font-semibold hover:bg-orange-600 transition-colors duration-200 disabled:opacity-50"
       >
         {loading ? "Creating..." : "Create Session"}
       </button>

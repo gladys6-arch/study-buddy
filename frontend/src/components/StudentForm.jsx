@@ -23,8 +23,8 @@ export default function StudentForm({ onSuccess }) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="bg-white shadow-lg rounded-xl p-6 space-y-4">
-      <h2 className="text-xl font-semibold text-gray-800 mb-4">Add New Student</h2>
+    <form onSubmit={handleSubmit} className="bg-white shadow-lg rounded-xl p-4 sm:p-6 space-y-4 mx-4 sm:mx-0">
+      <h2 className="text-lg sm:text-xl font-semibold text-gray-800 mb-4">Add New Student</h2>
 
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-1">Name</label>
@@ -53,7 +53,7 @@ export default function StudentForm({ onSuccess }) {
       <button
         type="submit"
         disabled={loading}
-        className="bg-blue-500 text-white px-6 py-2 rounded-lg font-semibold hover:bg-blue-600 transition-colors duration-200 disabled:opacity-50"
+        className="w-full sm:w-auto bg-blue-500 text-white px-6 py-2 rounded-lg font-semibold hover:bg-blue-600 transition-colors duration-200 disabled:opacity-50"
       >
         {loading ? "Adding..." : "Add Student"}
       </button>
