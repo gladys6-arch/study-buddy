@@ -2,6 +2,8 @@ from flask import Flask
 from flask_migrate import Migrate 
 from flask_cors import CORS
 from models import db
+import os
+
 
 # routes
 from routes.session_routes import session_bp
@@ -14,7 +16,11 @@ from routes.study_session_routes import study_session_bp
 
 def create_app():
     app = Flask(__name__)
-    app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///app.db"
+    if os.environ.get('DATABASE_URL'):
+        app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get('DATABASE_URL')
+    else:
+        app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///app.db"
+
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 
@@ -43,4 +49,6 @@ def create_app():
 
 
 if __name__ == "__main__":
-    create_app().run(debug=True)
+    create_app().run(debug=False, host="0.0.0.0", port=int(os.environ.get('PORT', 5000)))
+
+
