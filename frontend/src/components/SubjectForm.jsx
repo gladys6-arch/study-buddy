@@ -33,9 +33,9 @@ export default function SubjectForm({ onSuccess, initialData, onCancel, isEditin
   return (
     <form
       onSubmit={handleSubmit}
-      className="bg-white shadow-lg rounded-xl p-6 space-y-4"
+      className="bg-white shadow-lg rounded-xl p-4 sm:p-6 space-y-4 mx-4 sm:mx-0"
     >
-      <h2 className="text-xl font-semibold text-gray-800 mb-4">
+      <h2 className="text-lg sm:text-xl font-semibold text-gray-800 mb-4">
         {isEditing ? "Edit Subject" : "Add Subject"}
       </h2>
 
@@ -53,11 +53,11 @@ export default function SubjectForm({ onSuccess, initialData, onCancel, isEditin
         />
       </div>
 
-      <div className="flex gap-2">
+      <div className="flex flex-col sm:flex-row gap-2">
         <button
           type="submit"
           disabled={loading}
-          className="bg-blue-500 text-white px-6 py-2 rounded-lg font-semibold hover:bg-blue-600 transition-colors duration-200 disabled:opacity-50"
+          className="bg-blue-500 text-white px-6 py-2 rounded-lg font-semibold hover:bg-blue-600 transition-colors duration-200 disabled:opacity-50 flex-1 sm:flex-none"
         >
           {loading ? (isEditing ? "Updating..." : "Adding...") : (isEditing ? "Update Subject" : "Add Subject")}
         </button>
@@ -65,7 +65,7 @@ export default function SubjectForm({ onSuccess, initialData, onCancel, isEditin
           <button
             type="button"
             onClick={onCancel}
-            className="bg-gray-500 text-white px-6 py-2 rounded-lg font-semibold hover:bg-gray-600 transition-colors duration-200"
+            className="bg-gray-500 text-white px-6 py-2 rounded-lg font-semibold hover:bg-gray-600 transition-colors duration-200 flex-1 sm:flex-none"
           >
             Cancel
           </button>
