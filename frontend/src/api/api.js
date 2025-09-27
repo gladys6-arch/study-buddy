@@ -1,6 +1,7 @@
 import axios from "axios";
 
-const BASE_URL = "http://localhost:5000/api"; 
+const BASE_URL = "https://study-buddy-3bdu.onrender.com/api";
+
 
 // ---------- Students ----------
 export const getStudents = async () => {
