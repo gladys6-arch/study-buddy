@@ -1,13 +1,14 @@
-_pycache_/
-*.pyc__pycache__/
-
 # Python
 __pycache__/
 *.pyc
-venv/
+*.pyo
+*.pyd
+*.db
 
+# Virtual env
 venv/
 backend/venv/
+
+# Node
+node_modules/
 frontend/node_modules/
-*.pyc
-__pycache__/
