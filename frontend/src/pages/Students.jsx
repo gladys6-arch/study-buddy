@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { getStudents, createStudent, deleteStudent, updateStudent } from "../api/api";
 
 const Students = () => {
@@ -57,77 +57,81 @@ const Students = () => {
   };
 
   return (
-    <div className="max-w-2xl mx-auto mt-10 p-6 bg-white shadow-lg rounded-2xl">
-      <h2 className="text-2xl font-bold mb-6 text-gray-800">🎓 Students</h2>
+    <div className="max-w-4xl mx-auto mt-4 sm:mt-10 p-4 sm:p-6">
+      <div className="bg-white shadow-lg rounded-2xl p-4 sm:p-6">
+        <h2 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6 text-gray-800">🎓 Students</h2>
 
-      {/* Add student form */}
-      <form onSubmit={handleAdd} className="flex items-center gap-3 mb-6">
-        <input
-          type="text"
-          value={newName}
-          placeholder="Enter student name"
-          onChange={(e) => setNewName(e.target.value)}
-          className="flex-1 px-4 py-2 border rounded-lg shadow-sm focus:ring focus:ring-blue-300"
-        />
-        <button
-          type="submit"
-          className="px-4 py-2 bg-blue-600 text-white font-semibold rounded-lg shadow hover:bg-blue-700 transition"
-        >
-          ➕ Add
-        </button>
-      </form>
-
-      {/* List students */}
-      <ul className="space-y-3">
-        {students.map((s) => (
-          <li
-            key={s.id}
-            className="flex justify-between items-center px-4 py-2 bg-gray-100 rounded-lg shadow-sm"
+        {/* Add student form */}
+        <form onSubmit={handleAdd} className="flex flex-col sm:flex-row gap-3 mb-6">
+          <input
+            type="text"
+            value={newName}
+            placeholder="Enter student name"
+            onChange={(e) => setNewName(e.target.value)}
+            className="flex-1 px-4 py-2 border rounded-lg shadow-sm focus:ring focus:ring-blue-300"
+          />
+          <button
+            type="submit"
+            className="px-4 py-2 bg-blue-600 text-white font-semibold rounded-lg shadow hover:bg-blue-700 transition whitespace-nowrap"
           >
-            {editingStudent?.id === s.id ? (
-              <form onSubmit={handleUpdate} className="flex gap-2 flex-1">
-                <input
-                  type="text"
-                  value={editName}
-                  onChange={(e) => setEditName(e.target.value)}
-                  className="flex-1 px-2 py-1 border rounded"
-                />
-                <button
-                  type="submit"
-                  className="px-3 py-1 bg-green-500 text-white text-sm rounded hover:bg-green-600"
-                >
-                  Save
-                </button>
-                <button
-                  type="button"
-                  onClick={handleCancelEdit}
-                  className="px-3 py-1 bg-gray-500 text-white text-sm rounded hover:bg-gray-600"
-                >
-                  Cancel
-                </button>
-              </form>
-            ) : (
-              <>
-                <span className="text-gray-800 font-medium">{s.name}</span>
-                <div className="flex gap-2">
-                  <button
-                    onClick={() => handleEdit(s)}
-                    className="px-3 py-1 bg-blue-500 text-white text-sm font-semibold rounded-lg shadow hover:bg-blue-600 transition"
-                  >
-                    ✏️ Edit
-                  </button>
-                  <button
-                    onClick={() => handleDelete(s.id)}
-                    className="px-3 py-1 bg-red-500 text-white text-sm font-semibold rounded-lg shadow hover:bg-red-600 transition"
-                  >
-                    ❌ Delete
-                  </button>
-                </div>
-              </>
-            )}
-          </li>
-        ))}
-      </ul>
+            ➕ Add Student
+          </button>
+        </form>
+
+        {/* List students */}
+        <ul className="space-y-3">
+          {students.map((s) => (
+            <li
+              key={s.id}
+              className="flex flex-col sm:flex-row sm:justify-between sm:items-center px-4 py-3 bg-gray-100 rounded-lg shadow-sm gap-3"
+            >
+              {editingStudent?.id === s.id ? (
+                <form onSubmit={handleUpdate} className="flex flex-col sm:flex-row gap-2 flex-1">
+                  <input
+                    type="text"
+                    value={editName}
+                    onChange={(e) => setEditName(e.target.value)}
+                    className="flex-1 px-2 py-1 border rounded"
+                  />
+                  <div className="flex gap-2">
+                    <button
+                      type="submit"
+                      className="px-3 py-1 bg-green-500 text-white text-sm rounded hover:bg-green-600 flex-1 sm:flex-none"
+                    >
+                      Save
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handleCancelEdit}
+                      className="px-3 py-1 bg-gray-500 text-white text-sm rounded hover:bg-gray-600 flex-1 sm:flex-none"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </form>
+              ) : (
+                <>
+                  <span className="text-gray-800 font-medium break-words">{s.name}</span>
+                  <div className="flex gap-2 flex-shrink-0">
+                    <button
+                      onClick={() => handleEdit(s)}
+                      className="px-3 py-1 bg-blue-500 text-white text-sm font-semibold rounded-lg shadow hover:bg-blue-600 transition flex-1 sm:flex-none"
+                    >
+                      ✏️ Edit
+                    </button>
+                    <button
+                      onClick={() => handleDelete(s.id)}
+                      className="px-3 py-1 bg-red-500 text-white text-sm font-semibold rounded-lg shadow hover:bg-red-600 transition flex-1 sm:flex-none"
+                    >
+                      ❌ Delete
+                    </button>
+                  </div>
+                </>
+              )}
+            </li>
+          ))}
+        </ul>
+      </div>
     </div>
   );
 };
