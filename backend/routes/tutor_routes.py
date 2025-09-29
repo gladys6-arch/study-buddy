@@ -10,7 +10,7 @@ def get_tutors():
         "id": t.id, 
         "name": t.name, 
         "email": t.email,
-        "subjects": [ts.subject.name for ts in t.subjects]
+        "subjects": [s.name for s in t.owned_subjects] + [ts.subject.name for ts in t.subjects]
     } for t in tutors])
 
 #tutors routes
@@ -21,7 +21,7 @@ def get_tutor(id):
         "id": tutor.id, 
         "name": tutor.name, 
         "email": tutor.email,
-        "subjects": [ts.subject.name for ts in tutor.subjects]
+        "subjects": [s.name for s in tutor.owned_subjects] + [ts.subject.name for ts in tutor.subjects]
     })
 
 
