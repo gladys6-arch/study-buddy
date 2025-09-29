@@ -19,7 +19,7 @@ def get_subject(id):
 @subject_bp.route("/", methods=["POST"])
 def create_subject():
     data = request.get_json()
-    new_subject = Subject(name=data["name"])
+    new_subject = Subject(name=data["name"], tutor_id=data.get("tutor_id"))
     db.session.add(new_subject)
     db.session.commit()
     return jsonify({"message": "Subject created", "id": new_subject.id}), 201
@@ -30,6 +30,7 @@ def update_subject(id):
     subject = Subject.query.get_or_404(id)
     data = request.get_json()
     subject.name = data.get("name", subject.name)
+    subject.tutor_id = data.get("tutor_id", subject.tutor_id)
     db.session.commit()
     return jsonify({"message": "Subject updated"})
 
