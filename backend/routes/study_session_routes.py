@@ -7,7 +7,17 @@ study_session_bp = Blueprint("study_sessions", __name__, url_prefix="/study-sess
 @study_session_bp.route("/", methods=["GET"])
 def get_study_sessions():
     sessions = StudySession.query.all()
-    return jsonify([s.to_dict() for s in sessions]), 200
+    return jsonify([{
+        "id": s.id,
+        "notes": s.notes,
+        "duration_minutes": s.duration_minutes,
+        "description": s.description,
+        "status": s.status,
+        "student_name": s.student.name if s.student else None,
+        "subject_name": s.subject.name if s.subject else None,
+        "student_id": s.student_id,
+        "subject_id": s.subject_id
+    } for s in sessions]), 200
 
 # GET single study session by id
 @study_session_bp.route("/<int:id>", methods=["GET"])
@@ -22,12 +32,28 @@ def create_study_session():
     new_session = StudySession(
         student_id=data.get("student_id"),
         subject_id=data.get("subject_id"),
-        # remove tutor_id if not part of model
-        # scheduled_time=data.get("scheduled_time") if field exists
+        notes=data.get("notes"),
+        duration_minutes=data.get("duration_minutes"),
+        description=data.get("description"),
+        status=data.get("status", "start")
     )
     db.session.add(new_session)
     db.session.commit()
     return jsonify(new_session.to_dict()), 201
+
+# PUT update study session
+@study_session_bp.route("/<int:id>", methods=["PUT"])
+def update_study_session(id):
+    session = StudySession.query.get_or_404(id)
+    data = request.get_json()
+    
+    session.status = data.get("status", session.status)
+    session.notes = data.get("notes", session.notes)
+    session.duration_minutes = data.get("duration_minutes", session.duration_minutes)
+    session.description = data.get("description", session.description)
+    
+    db.session.commit()
+    return jsonify({"message": "Study session updated"}), 200
 
 # DELETE a study session
 @study_session_bp.route("/<int:id>", methods=["DELETE"])

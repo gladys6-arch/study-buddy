@@ -111,7 +111,12 @@ const Students = () => {
                 </form>
               ) : (
                 <>
-                  <span className="text-gray-800 font-medium break-words">{s.name}</span>
+                  <div className="flex-1">
+                    <span className="text-gray-800 font-medium break-words">{s.name}</span>
+                    <div className="text-sm text-gray-500 mt-1">
+                      📚 {s.study_sessions_count || 0} study sessions
+                    </div>
+                  </div>
                   <div className="flex gap-2 flex-shrink-0">
                     <button
                       onClick={() => handleEdit(s)}

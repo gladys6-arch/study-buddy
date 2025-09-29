@@ -60,6 +60,7 @@ class StudySession(db.Model, SerializerMixin):
     notes = db.Column(db.Text, nullable=True)
     duration_minutes = db.Column(db.Integer)
     description = db.Column(db.String)
+    status = db.Column(db.String, default="start", nullable=False)
 
     student_id = db.Column(db.Integer, db.ForeignKey("students.id"), nullable=True)
     subject_id = db.Column(db.Integer, db.ForeignKey("subjects.id"), nullable=True)

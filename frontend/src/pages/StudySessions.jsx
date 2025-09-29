@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getStudySessions, deleteStudySession } from "../api/api";
+import { getStudySessions, deleteStudySession, updateStudySession } from "../api/api";
 import StudySessionForm from "../components/StudySessionForm";
 
 export default function StudySessions() {
@@ -28,6 +28,24 @@ export default function StudySessions() {
       } catch (error) {
         console.error('Error deleting study session:', error);
       }
+    }
+  };
+
+  const handleStatusChange = async (id, newStatus) => {
+    try {
+      await updateStudySession(id, { status: newStatus });
+      fetchSessions();
+    } catch (error) {
+      console.error('Error updating status:', error);
+    }
+  };
+
+  const getStatusColor = (status) => {
+    switch (status) {
+      case 'start': return 'bg-blue-100 text-blue-600';
+      case 'in progress': return 'bg-yellow-100 text-yellow-600';
+      case 'completed': return 'bg-green-100 text-green-600';
+      default: return 'bg-gray-100 text-gray-600';
     }
   };
 
@@ -68,12 +86,32 @@ export default function StudySessions() {
                     <div className="bg-orange-500 text-white w-10 h-10 rounded-full flex items-center justify-center font-bold">
                       {session.id}
                     </div>
-                    <span className="text-xs text-orange-600 bg-orange-100 px-2 py-1 rounded-full">
-                      Active
-                    </span>
+                    <select
+                      value={session.status || 'start'}
+                      onChange={(e) => handleStatusChange(session.id, e.target.value)}
+                      className={`text-xs px-2 py-1 rounded-full border-0 ${getStatusColor(session.status)}`}
+                    >
+                      <option value="start">Start</option>
+                      <option value="in progress">In Progress</option>
+                      <option value="completed">Completed</option>
+                    </select>
                   </div>
                   
                   <div className="space-y-2">
+                    {session.student_name && (
+                      <div className="flex items-center text-sm text-gray-600">
+                        <span className="font-medium mr-2">Student:</span>
+                        <span>{session.student_name}</span>
+                      </div>
+                    )}
+                    
+                    {session.subject_name && (
+                      <div className="flex items-center text-sm text-gray-600">
+                        <span className="font-medium mr-2">Subject:</span>
+                        <span>{session.subject_name}</span>
+                      </div>
+                    )}
+                    
                     <div className="flex items-center text-sm text-gray-600">
                       <span className="font-medium mr-2">Duration:</span>
                       <span>{session.duration_minutes || 'N/A'} minutes</span>
@@ -89,9 +127,9 @@ export default function StudySessions() {
                     <div className="flex items-center justify-between pt-3 border-t border-orange-100">
                       <span className="text-xs text-gray-500">Session #{session.id}</span>
                       <div className="flex items-center gap-2">
-                        <div className="flex items-center text-xs text-green-600">
-                          <span className="w-2 h-2 bg-green-400 rounded-full mr-1"></span>
-                          In Progress
+                        <div className={`flex items-center text-xs px-2 py-1 rounded-full ${getStatusColor(session.status)}`}>
+                          <span className="w-2 h-2 bg-current rounded-full mr-1 opacity-60"></span>
+                          {session.status || 'start'}
                         </div>
                         <button
                           onClick={() => handleDelete(session.id)}

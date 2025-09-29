@@ -7,7 +7,12 @@ student_bp = Blueprint("student", __name__)
 @student_bp.route("/", methods=["GET"])
 def get_students():
     students = Student.query.all()
-    return jsonify([{"id": s.id, "name": s.name, "email": s.email} for s in students])
+    return jsonify([{
+        "id": s.id, 
+        "name": s.name, 
+        "email": s.email,
+        "study_sessions_count": len(s.study_sessions)
+    } for s in students])
 
 # GET single student by id
 @student_bp.route("/<int:id>", methods=["GET"])
