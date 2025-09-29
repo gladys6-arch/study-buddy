@@ -6,12 +6,25 @@ tutor_bp = Blueprint("tutor", __name__)
 @tutor_bp.route("/", methods=["GET"])
 def get_tutors():
     tutors = Tutor.query.all()
-    return jsonify([{"id": t.id, "name": t.name, "email": t.email} for t in tutors])
+    return jsonify([{
+        "id": t.id, 
+        "name": t.name, 
+        "email": t.email,
+        "subjects": [ts.subject.name for ts in t.subjects]
+    } for t in tutors])
 
+#tutors routes
 @tutor_bp.route("/<int:id>", methods=["GET"])
 def get_tutor(id):
     tutor = Tutor.query.get_or_404(id)
-    return jsonify({"id": tutor.id, "name": tutor.name, "email": tutor.email})
+    return jsonify({
+        "id": tutor.id, 
+        "name": tutor.name, 
+        "email": tutor.email,
+        "subjects": [ts.subject.name for ts in tutor.subjects]
+    })
+
+
 
 @tutor_bp.route("/", methods=["POST"])
 def create_tutor():

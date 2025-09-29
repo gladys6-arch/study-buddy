@@ -11,14 +11,20 @@ def get_students():
         "id": s.id, 
         "name": s.name, 
         "email": s.email,
-        "study_sessions_count": len(s.study_sessions)
+        "study_sessions_count": len(s.study_sessions),
+        "subjects": list(set([session.subject.name for session in s.study_sessions if session.subject]))
     } for s in students])
 
 # GET single student by id
 @student_bp.route("/<int:id>", methods=["GET"])
 def get_student(id):
     student = Student.query.get_or_404(id)
-    return jsonify({"id": student.id, "name": student.name, "email": student.email})
+    return jsonify({
+        "id": student.id, 
+        "name": student.name, 
+        "email": student.email,
+        "subjects": list(set([session.subject.name for session in student.study_sessions if session.subject]))
+    })
 
 # POST create a new student
 @student_bp.route("/", methods=["POST"])
