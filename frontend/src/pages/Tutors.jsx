@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { getTutors, deleteTutor, updateTutor } from "../api/api";
 import TutorForm from "../components/TutorForm";
+import TutorSubjectAssignment from "../components/TutorSubjectAssignment";
 
 export default function Tutors() {
   const [tutors, setTutors] = useState([]);
@@ -74,6 +75,9 @@ export default function Tutors() {
             <TutorForm onSuccess={fetchTutors} />
           )}
         </div>
+
+        {/* Subject Assignment */}
+        <TutorSubjectAssignment onSuccess={fetchTutors} />
 
         {/* Tutors List */}
         <div className="bg-white rounded-xl shadow-lg p-8">
