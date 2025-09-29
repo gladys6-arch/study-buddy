@@ -15,8 +15,10 @@ def get_study_sessions():
         "status": s.status,
         "student_name": s.student.name if s.student else None,
         "subject_name": s.subject.name if s.subject else None,
+        "tutor_name": s.tutor.name if s.tutor else None,
         "student_id": s.student_id,
-        "subject_id": s.subject_id
+        "subject_id": s.subject_id,
+        "tutor_id": s.tutor_id
     } for s in sessions]), 200
 
 # GET single study session by id
@@ -32,6 +34,7 @@ def create_study_session():
     new_session = StudySession(
         student_id=data.get("student_id"),
         subject_id=data.get("subject_id"),
+        tutor_id=data.get("tutor_id"),
         notes=data.get("notes"),
         duration_minutes=data.get("duration_minutes"),
         description=data.get("description"),

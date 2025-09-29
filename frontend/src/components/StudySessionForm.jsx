@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { createStudySession, getStudents, getSubjects } from "../api/api";
+import { createStudySession, getStudents, getSubjects, getTutors } from "../api/api";
 
 export default function StudySessionForm({ onSuccess }) {
   const [duration, setDuration] = useState("");
@@ -8,6 +8,8 @@ export default function StudySessionForm({ onSuccess }) {
   const [subjectId, setSubjectId] = useState("");
   const [students, setStudents] = useState([]);
   const [subjects, setSubjects] = useState([]);
+  const [tutors, setTutors] = useState([]);
+  const [tutorId, setTutorId] = useState("");
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -16,12 +18,14 @@ export default function StudySessionForm({ onSuccess }) {
 
   const fetchData = async () => {
     try {
-      const [studentsData, subjectsData] = await Promise.all([
+      const [studentsData, subjectsData, tutorsData] = await Promise.all([
         getStudents(),
-        getSubjects()
+        getSubjects(),
+        getTutors()
       ]);
       setStudents(studentsData);
       setSubjects(subjectsData);
+      setTutors(tutorsData);
     } catch (error) {
       console.error('Error fetching data:', error);
     }
@@ -37,11 +41,13 @@ export default function StudySessionForm({ onSuccess }) {
         notes,
         student_id: studentId || null,
         subject_id: subjectId || null,
+        tutor_id: tutorId || null,
       });
       setDuration("");
       setNotes("");
       setStudentId("");
       setSubjectId("");
+      setTutorId("");
       if (onSuccess) onSuccess(); 
     } catch (error) {
       console.error("Error creating study session:", error);
@@ -81,6 +87,22 @@ export default function StudySessionForm({ onSuccess }) {
           {subjects.map((subject) => (
             <option key={subject.id} value={subject.id}>
               {subject.name}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">Tutor (optional)</label>
+        <select
+          value={tutorId}
+          onChange={(e) => setTutorId(e.target.value)}
+          className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-orange-400 outline-none"
+        >
+          <option value="">Select a tutor...</option>
+          {tutors.map((tutor) => (
+            <option key={tutor.id} value={tutor.id}>
+              {tutor.name}
             </option>
           ))}
         </select>

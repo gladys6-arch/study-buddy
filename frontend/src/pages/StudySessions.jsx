@@ -115,6 +115,13 @@ export default function StudySessions() {
                       </div>
                     )}
                     
+                    {session.tutor_name && (
+                      <div className="flex items-center text-sm text-gray-600">
+                        <span className="font-medium mr-2">Tutor:</span>
+                        <span>{session.tutor_name}</span>
+                      </div>
+                    )}
+                    
                     <div className="flex items-center text-sm text-gray-600">
                       <span className="font-medium mr-2">Duration:</span>
                       <span>{session.duration_minutes || 'N/A'} minutes</span>

@@ -64,9 +64,11 @@ class StudySession(db.Model, SerializerMixin):
 
     student_id = db.Column(db.Integer, db.ForeignKey("students.id"), nullable=True)
     subject_id = db.Column(db.Integer, db.ForeignKey("subjects.id"), nullable=True)
+    tutor_id = db.Column(db.Integer, db.ForeignKey("tutors.id"), nullable=True)
 
     student = db.relationship("Student", back_populates="study_sessions")
     subject = db.relationship("Subject", back_populates="study_sessions")
+    tutor = db.relationship("Tutor")
 
     serialize_rules = ("-student.study_sessions", "-subject.study_sessions")
 
