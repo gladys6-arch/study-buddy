@@ -46,9 +46,16 @@ def update_tutor(id):
 @tutor_bp.route("/<int:id>", methods=["DELETE"])
 def delete_tutor(id):
     tutor = Tutor.query.get_or_404(id)
-    # Delete related tutor-subject relationships first
+    
+    # Delete owned subjects (set tutor_id to NULL)
+    for subject in tutor.owned_subjects:
+        subject.tutor_id = None
+    
+    # Delete tutor-subject teaching relationships
     for tutor_subject in tutor.subjects:
         db.session.delete(tutor_subject)
+    
+    # Delete the tutor
     db.session.delete(tutor)
     db.session.commit()
     return jsonify({"message": "Tutor deleted"}), 200
