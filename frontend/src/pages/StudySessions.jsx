@@ -32,11 +32,14 @@ export default function StudySessions() {
   };
 
   const handleStatusChange = async (id, newStatus) => {
+    console.log('Changing status for session', id, 'to', newStatus);
     try {
-      await updateStudySession(id, { status: newStatus });
+      const response = await updateStudySession(id, { status: newStatus });
+      console.log('Status update response:', response);
       fetchSessions();
     } catch (error) {
       console.error('Error updating status:', error);
+      alert('Failed to update status. Please try again.');
     }
   };
 
