@@ -115,6 +115,11 @@ const Students = () => {
                     <span className="text-gray-800 font-medium break-words">{s.name}</span>
                     <div className="text-sm text-gray-500 mt-1">
                       📚 {s.study_sessions_count || 0} study sessions
+                      {s.subjects && s.subjects.length > 0 && (
+                        <div className="text-xs text-blue-600 mt-1">
+                          Subjects: {s.subjects.join(", ")}
+                        </div>
+                      )}
                     </div>
                   </div>
                   <div className="flex gap-2 flex-shrink-0">

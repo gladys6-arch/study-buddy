@@ -104,6 +104,12 @@ export default function Tutors() {
                         {tutor.name}
                       </h3>
                       <p className="text-gray-600 text-sm mb-2">{tutor.email}</p>
+                      {tutor.subjects && tutor.subjects.length > 0 && (
+                        <div className="mb-2">
+                          <span className="text-xs text-gray-500">Subjects: </span>
+                          <span className="text-xs text-purple-600">{tutor.subjects.join(", ")}</span>
+                        </div>
+                      )}
                       <div className="flex items-center justify-between">
                         <div className="flex items-center text-xs text-purple-600 bg-purple-100 px-2 py-1 rounded-full w-fit">
                           <span className="w-2 h-2 bg-green-400 rounded-full mr-2"></span>
