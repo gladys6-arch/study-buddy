@@ -21,11 +21,16 @@ class Subject(db.Model, SerializerMixin):
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, nullable=False)
+    tutor_id = db.Column(db.Integer, db.ForeignKey("tutors.id"), nullable=True)  # Owner/manager
 
+    # One-to-many: Subject belongs to one tutor (owner)
+    owner_tutor = db.relationship("Tutor", back_populates="owned_subjects")
+    
+    # Many-to-many: Subject can be taught by multiple tutors
     tutors = db.relationship("TutorSubject", back_populates="subject")
     study_sessions = db.relationship("StudySession", back_populates="subject")
 
-    serialize_rules = ("-study_sessions.subject", "-tutors.subject")
+    serialize_rules = ("-study_sessions.subject", "-tutors.subject", "-owner_tutor.owned_subjects")
 
 
 class Tutor(db.Model, SerializerMixin):
@@ -35,9 +40,13 @@ class Tutor(db.Model, SerializerMixin):
     name = db.Column(db.String, nullable=False)
     email = db.Column(db.String, unique=True, nullable=False)
 
+    # One-to-many: Tutor owns many subjects
+    owned_subjects = db.relationship("Subject", back_populates="owner_tutor")
+    
+    # Many-to-many: Tutor can teach many subjects
     subjects = db.relationship("TutorSubject", back_populates="tutor")
 
-    serialize_rules = ("-subjects.tutor",)
+    serialize_rules = ("-subjects.tutor", "-owned_subjects.owner_tutor")
 
 
 class TutorSubject(db.Model, SerializerMixin):
